@@ -29,6 +29,8 @@ NEW_HOURS = 12           # "new since the last edition"
 MAX_PER_SOURCE = 8       # stop one busy feed drowning the rest
 LEAD_COUNT = 6           # stories in the "Latest" block
 MAX_PER_TOPIC = 14
+MAX_TOOLS = 8            # stories in the "Tools & builds" block
+TOOLS_WINDOW_HOURS = 96  # launches are rarer, so look back further
 MAX_EVENTS = 10
 MIN_ITEMS = 5            # fewer than this and the build fails, keeping the old page
 USER_AGENT = "Mozilla/5.0 (compatible; ai-newsletter-bot/1.0)"
@@ -128,9 +130,10 @@ def parse_feed(xml_bytes, source):
         if not (title and link and when):
             continue
         summary = _clean(
-            fields.get("description") or fields.get("summary") or fields.get("content"),
-            limit=220,
-        )
+            fields.get("description") or fields.get("summary") or fields.get("content"))
+        # Hacker News feeds append link/points boilerplate to the post text.
+        summary = re.split(r"\b(?:Article|Comments) URL:", summary)[0]
+        summary = _clean(summary, limit=220)
         if summary.lower().startswith(title.lower()[:40]):
             summary = ""
         stories.append({"title": title, "url": link, "when": when,
@@ -151,6 +154,9 @@ def fetch_feed(feed):
         return []
     if feed.get("ai_only"):
         stories = [s for s in stories if AI_RE.search(s["title"] + " " + s["summary"])]
+    for s in stories:
+        s["section"] = feed.get("section", "news")
+        s["title"] = re.sub(r"^(Show|Launch) HN:\s*", "", s["title"])
     print(f"  ok   {feed['name']}: {len(stories)} stories", file=sys.stderr)
     return stories
 
@@ -165,19 +171,21 @@ def collect(feeds, now):
     stories = [s for batch in batches for s in batch if s["when"] <= now + timedelta(hours=1)]
     stories.sort(key=lambda s: s["when"], reverse=True)
 
-    cutoff = now - timedelta(hours=WINDOW_HOURS)
-    seen_urls, seen_titles, per_source, kept = set(), set(), {}, []
+    seen_urls, seen_titles, per_source, kept = {}, {}, {}, []
     for s in stories:
-        if s["when"] < cutoff:
+        hours = TOOLS_WINDOW_HOURS if s["section"] == "tools" else WINDOW_HOURS
+        if s["when"] < now - timedelta(hours=hours):
             continue
         url_key = s["url"].split("?")[0].rstrip("/")
         title_key = _title_key(s["title"])
-        if url_key in seen_urls or title_key in seen_titles:
+        dupe = seen_urls.get(url_key) or seen_titles.get(title_key)
+        if dupe:
+            if s["section"] == "tools":  # a launch also seen in a news feed stays a launch
+                dupe["section"] = "tools"
             continue
         if per_source.get(s["source"], 0) >= MAX_PER_SOURCE:
             continue
-        seen_urls.add(url_key)
-        seen_titles.add(title_key)
+        seen_urls[url_key] = seen_titles[title_key] = s
         per_source[s["source"]] = per_source.get(s["source"], 0) + 1
         s["new"] = s["when"] >= now - timedelta(hours=NEW_HOURS)
         kept.append(s)
@@ -294,13 +302,23 @@ def render_event(e, today):
 
 
 def render(stories, events, now, template):
-    lead, rest = split_lead(stories)
+    tools = [s for s in stories if s["section"] == "tools"][:MAX_TOOLS]
+    lead, rest = split_lead([s for s in stories if s["section"] != "tools"])
     groups = {}
     for s in rest:
         groups.setdefault(classify(s), []).append(s)
     order = [name for name, _ in TOPICS] + [OTHER_TOPIC]
 
     sections, nav = [], ['<a href="#latest">Latest</a>']
+    tools_html = ""
+    if tools:
+        nav.insert(0, '<a href="#tools">Tools &amp; builds</a>')
+        tools_html = (
+            '<section id="tools" class="feature"><h2>Tools &amp; builds</h2>'
+            '<p class="blurb">New tools, launches and things people are making with AI.</p>'
+            '<ul class="stories">' + "".join(render_story(s, now, lead=True) for s in tools)
+            + "</ul></section>"
+        )
     for name in order:
         items = groups.get(name, [])[:MAX_PER_TOPIC]
         if not items:
@@ -325,6 +343,7 @@ def render(stories, events, now, template):
         "source_count": str(len(sources)),
         "sources": esc(", ".join(sources)),
         "nav": "".join(nav),
+        "tools": tools_html,
         "lead": "".join(render_story(s, now, lead=True) for s in lead),
         "sections": "".join(sections),
         "events": "".join(render_event(e, now.date()) for e in events)

@@ -70,7 +70,10 @@
   .meta .source { font-weight: 600; color: var(--ink); }
   .new { background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: .66rem;
          letter-spacing: .08em; text-transform: uppercase; border-radius: 4px; padding: 2px 6px; }
-  #latest .story > a { font-size: 1.3rem; }
+  .feature .story > a { font-size: 1.3rem; }
+  #tools { border-top: 4px solid var(--accent); }
+  #tools .story > a { font-size: 1.12rem; }
+  .blurb { color: var(--muted); font-size: .88rem; margin: 8px 0 0; }
 
   footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 40px; color: var(--muted); font-size: .8rem; }
 
@@ -85,8 +88,8 @@
     .event:last-child { border-bottom: 0; }
     .event.live { border-color: var(--pin-rule); }
     .event-kind { display: block; }
-    #latest .stories { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
-    #latest .story:nth-last-child(-n+2) { border-bottom: 0; }
+    .feature .stories { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
+    .feature .story:nth-last-child(-n+2) { border-bottom: 0; }
     html { scroll-padding-top: 1rem; }
   }
 </style>
@@ -107,7 +110,8 @@
 
   <main class="content">
     <nav class="topics" aria-label="Sections">{{nav}}</nav>
-    <section id="latest"><h2>Latest</h2><ul class="stories">{{lead}}</ul></section>
+    {{tools}}
+    <section id="latest" class="feature"><h2>Latest</h2><ul class="stories">{{lead}}</ul></section>
     {{sections}}
   </main>
 </div>

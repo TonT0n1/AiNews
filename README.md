@@ -7,7 +7,7 @@ strip on phones).
 ## How it works
 
 - `build.py` fetches the RSS/Atom feeds in `feeds.json`, keeps the last 48 hours,
-  de-duplicates, groups stories by topic and writes one self-contained HTML file.
+  de-duplicates, puts launches and projects in a "Tools & builds" block at the top, groups the rest by topic and writes one self-contained HTML file.
   Standard library only.
 - `events.json` is the pinned events list. Past events drop off automatically;
   countdowns update in the browser. Set `"tentative": true` to show a "TBC" tag.
@@ -30,7 +30,7 @@ python3 newsletter/build.py --out _site/index.html
 ## Customising
 
 - Add or remove sources in `feeds.json`. `"ai_only": true` keeps only AI-related
-  stories from a general feed.
+  stories from a general feed; `"section": "tools"` sends a feed to the Tools & builds block.
 - Edit `events.json` to change what is pinned.
 - Change the schedule in the workflow's `cron` line (times are UTC).
 - Title, time window and limits are constants at the top of `build.py`.
