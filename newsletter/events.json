@@ -1,5 +1,13 @@
 [
   {
+    "name": "Microsoft Ignite 2026",
+    "start": "2026-11-17",
+    "end": "2026-11-20",
+    "location": "Moscone Center, San Francisco",
+    "kind": "Conference",
+    "url": "https://ignite.microsoft.com/"
+  },
+  {
     "name": "Anthropic IPO: first day of trading (Nasdaq: ANT)",
     "start": "2026-11-19",
     "location": "Nasdaq · prices 18 Nov",
