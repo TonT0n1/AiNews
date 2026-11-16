@@ -1,0 +1,23 @@
+[
+  {"name": "3Blue1Brown", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCYO_jab_esuFRV4b17AJtAw", "ai_only": true},
+  {"name": "Andrej Karpathy", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCXUPKJO5MZQN11PqgIvyuvQ"},
+  {"name": "DeepLearning.AI", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCcIXc5mJsHVYTZR1maL5l9w"},
+  {"name": "StatQuest", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCtYLUTtgS3k1Fg4y5tAhLbw"},
+  {"name": "Yannic Kilcher", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCZHmQk67mSJgfCCTn7xBfew"},
+  {"name": "Two Minute Papers", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCbfYPyITQ-7l4upoX8nvctg"},
+  {"name": "AI Explained", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCNJ1Ymd5yFuUPtn21xtRbbw"},
+  {"name": "Welch Labs", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UConVfxXodg78Tzh5nNu85Ew", "ai_only": true},
+  {"name": "Anthropic", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCrDwWp7EBBv4NwvScIpBDOA"},
+  {"name": "Hugging Face", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHlNU7kIZhRgSbhHvFoy72w"},
+  {"name": "AI Engineer", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLKPca3kwwd-B59HNr-_lvA"},
+  {"name": "IBM Technology", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCKWaEZ-_VweaEx1j62do_vQ", "ai_only": true},
+  {"name": "freeCodeCamp", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UC8butISFwT-Wl7EV0hUK0BQ", "ai_only": true},
+  {"name": "Fireship", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCsBjURrPoezykLs9EqgamOA", "ai_only": true},
+  {"name": "Sebastian Raschka", "url": "https://magazine.sebastianraschka.com/feed"},
+  {"name": "Lilian Weng", "url": "https://lilianweng.github.io/index.xml"},
+  {"name": "Eugene Yan", "url": "https://eugeneyan.com/rss/"},
+  {"name": "Simon Willison", "url": "https://simonwillison.net/atom/entries/", "ai_only": true},
+  {"name": "Chip Huyen", "url": "https://huyenchip.com/feed.xml"},
+  {"name": "Latent Space", "url": "https://www.latent.space/feed"},
+  {"name": "Hugging Face blog", "url": "https://huggingface.co/blog/feed.xml"}
+]

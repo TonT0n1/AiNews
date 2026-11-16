@@ -38,6 +38,8 @@ jobs:
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 newsletter/build.py --out _site/index.html
+      - name: Build learning page
+        run: python3 newsletter/learn.py --out _site/learn/index.html
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site

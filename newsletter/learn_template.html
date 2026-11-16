@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A free, staged programme for learning AI: from how models work, to training and fine-tuning, to building agents.">
+<title>{{title}}</title>
+<style>
+  :root {
+    --bg: #f3f5f0; --surface: #fdfefb; --ink: #171a17; --muted: #5f675f;
+    --rule: #d5dbd0; --accent: #1f6b4a; --accent-soft: #dcefe4; --pin: #16302a; --pin-ink: #eef4ee;
+    --pin-muted: #a9c0b5; --pin-rule: #2c4a41; --pin-accent: #8fe0b4;
+    --beg: #1f6b4a; --int: #8a5a00; --adv: #9b2c2c;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121512; --surface: #1a1e1a; --ink: #e8ece6; --muted: #98a197;
+      --rule: #2d342d; --accent: #7fd8a8; --accent-soft: #1d3329; --pin: #0b1613;
+      --pin-rule: #24382f; --beg: #7fd8a8; --int: #e6b85c; --adv: #f09a9a;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 7.5rem; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--sans); }
+  a { color: inherit; text-decoration: none; }
+  a:hover, a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+  p { margin: 0; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+
+  .masthead { max-width: 1180px; margin: 0 auto; padding: 28px 16px 14px; text-align: center; }
+  .kicker { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .masthead h1 { font: 700 clamp(2.2rem, 7vw, 4rem)/1.05 var(--serif); margin: 6px 0 8px; letter-spacing: -.02em; }
+  .lede { max-width: 46rem; margin: 0 auto 12px; color: var(--muted); text-wrap: pretty; }
+  .dateline { color: var(--muted); font-size: .9rem; border-block: 1px solid var(--rule); padding: 8px 0; }
+  .dateline a { color: var(--accent); font-weight: 600; }
+
+  .layout { max-width: 1180px; margin: 0 auto; padding: 0 16px 48px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+
+  /* Progress panel: sticky strip on phones, sticky sidebar on wide screens */
+  .pinned { position: sticky; top: 0; z-index: 5; background: var(--pin); color: var(--pin-ink);
+            margin: 0 -16px; padding: 10px 0 12px; box-shadow: 0 6px 16px rgb(0 0 0 / .18); }
+  .pinned h2 { font: 600 .72rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; margin: 0 16px 8px; color: var(--pin-accent); }
+  .overall { margin: 0 16px 10px; font-size: .82rem; color: var(--pin-muted); }
+  .bar { display: block; height: 6px; border-radius: 3px; background: var(--pin-rule); margin-top: 5px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--pin-accent); transition: width .3s; }
+  .stage-nav { list-style: none; margin: 0; padding: 0 16px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: thin; }
+  .stage-nav a { display: flex; align-items: center; gap: 8px; white-space: nowrap; border: 1px solid var(--pin-rule); border-radius: 999px; padding: 5px 11px; font-size: .82rem; }
+  .stage-nav a:hover { text-decoration: none; border-color: var(--pin-accent); }
+  .stage-nav .num { font-weight: 700; color: var(--pin-accent); }
+  .stage-nav .count { color: var(--pin-muted); font-variant-numeric: tabular-nums; }
+  .stage-nav a.done .count { color: var(--pin-accent); font-weight: 700; }
+  .saved-note { display: none; }
+
+  section { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 18px; margin-top: 18px; }
+  section h2 { font: 700 1.45rem/1.2 var(--serif); margin: 0 0 8px; text-wrap: balance; }
+  #routes h2, #new h2 { font: 700 .78rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+                        padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+  .blurb { color: var(--muted); font-size: .95rem; text-wrap: pretty; }
+  .stage-num { font: 700 .72rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .outcome { margin-top: 10px; padding: 9px 12px; background: var(--accent-soft); border-radius: 8px; font-size: .92rem; }
+  .stage.hidden { display: none; }
+
+  .routes { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+  .route { border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .route.active { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .route h3 { font: 700 1.05rem/1.25 var(--serif); margin: 0; }
+  .route p { font-size: .88rem; color: var(--muted); }
+  .route .steps { color: var(--ink); font-weight: 600; }
+  .route .steps a { color: var(--accent); }
+  .route button, .chips button { align-self: flex-start; border: 1px solid var(--rule); background: transparent; border-radius: 999px; padding: 5px 12px; font-size: .82rem; }
+  .route button:hover, .chips button:hover { border-color: var(--accent); }
+  .route.active button, .chips button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 18px; font-size: .82rem; color: var(--muted); }
+
+  .lessons { list-style: none; margin: 8px 0 0; padding: 0; }
+  .lessons li { padding: 9px 0; border-bottom: 1px solid var(--rule); }
+  .lessons li:last-child { border-bottom: 0; }
+  .lessons a { font: 600 1rem/1.3 var(--serif); display: block; }
+  .meta { font-size: .76rem; color: var(--muted); display: flex; gap: 8px; margin-top: 3px; }
+  .meta .source { font-weight: 600; color: var(--ink); }
+
+  .items { list-style: none; margin: 14px 0 0; padding: 0; }
+  .item { display: flex; gap: 12px; padding: 13px 0; border-top: 1px solid var(--rule); }
+  .item.hidden { display: none; }
+  .item input { flex: none; width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--accent); cursor: pointer; }
+  .item-title { font: 600 1.08rem/1.3 var(--serif); text-wrap: pretty; }
+  .item.done .item-title { text-decoration: line-through; color: var(--muted); }
+  .by { font-size: .8rem; color: var(--muted); margin-top: 1px; }
+  .why { font-size: .92rem; margin-top: 5px; text-wrap: pretty; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
+  .tag { font-size: .7rem; font-weight: 600; border: 1px solid var(--rule); border-radius: 4px; padding: 1px 6px; color: var(--muted); }
+  .lvl-beginner { color: var(--beg); border-color: currentColor; }
+  .lvl-intermediate { color: var(--int); border-color: currentColor; }
+  .lvl-advanced { color: var(--adv); border-color: currentColor; }
+
+  footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 40px; color: var(--muted); font-size: .8rem; }
+
+  @media (min-width: 700px) { .routes { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 900px) {
+    .layout { grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
+    .content { grid-column: 1; grid-row: 1; }
+    .pinned { grid-column: 2; grid-row: 1; top: 16px; margin: 18px 0 0; border-radius: 14px; padding: 18px 0 14px;
+              max-height: calc(100vh - 32px); overflow-y: auto; }
+    .pinned h2, .overall { margin-inline: 18px; }
+    .stage-nav { flex-direction: column; gap: 0; padding: 0 18px; overflow: visible; }
+    .stage-nav a { border: 0; border-bottom: 1px solid var(--pin-rule); border-radius: 0; padding: 9px 0; white-space: normal; }
+    .stage-nav li:last-child a { border-bottom: 0; }
+    .stage-nav .nav-title { flex: 1; }
+    .saved-note { display: block; margin: 10px 18px 0; font-size: .72rem; color: var(--pin-muted); }
+    html { scroll-padding-top: 1rem; }
+  }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <p class="kicker">A free programme, start to frontier</p>
+  <h1>{{title}}</h1>
+  <p class="lede">The best free tutorials on the internet, arranged in order: from what a neural network is,
+    through how language models are built and trained, to building agents that do real work.</p>
+  <p class="dateline">{{total}} hand-picked resources in {{stage_count}} stages · links checked
+    <time datetime="{{built_iso}}">{{built_text}}</time> · <a href="../">Today's AI news →</a></p>
+</header>
+
+<div class="layout">
+  <aside class="pinned" aria-label="Your progress">
+    <h2>Your progress</h2>
+    <p class="overall"><span id="overall-text">0 of {{total}} done</span><span class="bar"><i id="overall-bar"></i></span></p>
+    <ol class="stage-nav">{{nav}}</ol>
+    <p class="saved-note">Progress is saved in this browser only.</p>
+  </aside>
+
+  <main class="content">
+    <section id="routes">
+      <h2>Pick your route</h2>
+      <p class="blurb">You don't need every stage. Choose the route that matches what you want, and work through its stages in order. Within a stage, items run from easiest to hardest.</p>
+      <ul class="routes">{{routes}}</ul>
+    </section>
+
+    {{lessons}}
+
+    <p class="chips" id="levels">Show:
+      <button type="button" data-level="" aria-pressed="true">All levels</button>
+      <button type="button" data-level="Beginner" aria-pressed="false">Beginner</button>
+      <button type="button" data-level="Intermediate" aria-pressed="false">Intermediate</button>
+      <button type="button" data-level="Advanced" aria-pressed="false">Advanced</button>
+      <button type="button" id="all-stages" hidden>Show all stages</button>
+    </p>
+
+    {{stages}}
+  </main>
+</div>
+
+<footer>
+  <p>Every resource is free to read or watch; a few courses charge only for a certificate. Time estimates are
+    approximate. Links are re-checked twice a day and removed if they stop working.</p>
+</footer>
+
+<script>
+(function () {
+  var KEY = "ai-classroom-done", done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} }
+
+  var items = Array.prototype.slice.call(document.querySelectorAll(".item"));
+  function refresh() {
+    var total = 0, finished = 0;
+    document.querySelectorAll(".stage").forEach(function (stage) {
+      var all = stage.querySelectorAll(".item"), n = 0;
+      all.forEach(function (it) { if (done[it.dataset.id]) n++; });
+      total += all.length; finished += n;
+      var count = document.querySelector('[data-count="' + stage.id + '"]');
+      if (count) {
+        count.textContent = n + "/" + all.length;
+        count.parentNode.classList.toggle("done", n === all.length);
+      }
+    });
+    document.getElementById("overall-text").textContent = finished + " of " + total + " done";
+    document.getElementById("overall-bar").style.width = (total ? 100 * finished / total : 0) + "%";
+  }
+  items.forEach(function (it) {
+    var box = it.querySelector("input");
+    box.checked = !!done[it.dataset.id];
+    it.classList.toggle("done", box.checked);
+    box.addEventListener("change", function () {
+      if (box.checked) done[it.dataset.id] = 1; else delete done[it.dataset.id];
+      it.classList.toggle("done", box.checked);
+      save(); refresh();
+    });
+  });
+  refresh();
+
+  // Level filter
+  var levelButtons = document.querySelectorAll("#levels [data-level]");
+  levelButtons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      levelButtons.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      items.forEach(function (it) {
+        it.classList.toggle("hidden", !!b.dataset.level && it.dataset.level !== b.dataset.level);
+      });
+    });
+  });
+
+  // Route filter
+  var allStages = document.getElementById("all-stages");
+  function showRoute(ids, card) {
+    document.querySelectorAll(".route").forEach(function (r) { r.classList.toggle("active", r === card); });
+    document.querySelectorAll(".stage").forEach(function (s) {
+      s.classList.toggle("hidden", !!ids && ids.indexOf(s.id) < 0);
+    });
+    document.querySelectorAll(".stage-nav li").forEach(function (li) {
+      li.hidden = !!ids && ids.indexOf(li.querySelector("a").dataset.stage) < 0;
+    });
+    allStages.hidden = !ids;
+  }
+  document.querySelectorAll("[data-route]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var card = b.closest(".route"), active = card.classList.contains("active");
+      showRoute(active ? null : b.dataset.route.split(" "), active ? null : card);
+    });
+  });
+  allStages.addEventListener("click", function () { showRoute(null, null); });
+  // A link to a stage hidden by the route filter should still work
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest('a[href^="#"]');
+    var target = a && document.getElementById(a.getAttribute("href").slice(1));
+    if (target && target.classList.contains("hidden")) showRoute(null, null);
+  });
+
+  document.querySelectorAll("time[data-rel]").forEach(function (t) {
+    var d = Date.parse(t.dateTime), days = Math.floor((Date.now() - d) / 864e5);
+    if (!isNaN(d)) t.textContent = days <= 0 ? "today" : days === 1 ? "yesterday" : days + " days ago";
+  });
+})();
+</script>
+</body>
+</html>

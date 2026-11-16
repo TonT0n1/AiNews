@@ -14,6 +14,18 @@ strip on phones).
 - `.github/workflows/newsletter.yml` runs the build at 06:17 and 18:17 UTC and
   publishes it to GitHub Pages.
 
+## The AI Classroom (learning page)
+
+A second page, published at `/learn/`, is a staged programme of free AI tutorials: from what
+a neural network is, through how language models are built and fine-tuned, to building agents.
+
+- `newsletter/curriculum.json` is the hand-picked programme: stages, the resources in each, and
+  the three suggested routes through them. Edit this file to add, remove or reorder resources.
+- `newsletter/learn.py` builds the page. On every run it checks each link and leaves out any
+  that have died, and adds a "New lessons" strip from the channels and blogs in
+  `newsletter/learn_feeds.json`.
+- Readers tick items off as they go; progress is stored in their own browser.
+
 ## AI editing (optional)
 
 With an API key, each build also asks an AI model to write a short summary of every story,

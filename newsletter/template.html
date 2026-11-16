@@ -32,6 +32,7 @@
   .masthead .kicker { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
   .masthead h1 { font: 700 clamp(2.2rem, 7vw, 4rem)/1.05 var(--serif); margin: 6px 0 10px; letter-spacing: -.02em; }
   .masthead .dateline { color: var(--muted); font-size: .9rem; border-block: 1px solid var(--rule); padding: 8px 0; }
+  .masthead .dateline .cross { color: var(--accent); font-weight: 600; }
   .masthead .dateline b { color: var(--ink); font-weight: 600; }
 
   .layout { max-width: 1180px; margin: 0 auto; padding: 0 16px 48px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
@@ -108,7 +109,7 @@
   <p class="kicker">{{edition}}</p>
   <h1>{{title}}</h1>
   <p class="dateline"><b>{{date_long}}</b> · updated <time datetime="{{built_iso}}" data-rel>{{built_text}}</time>
-    · {{story_count}} stories from {{source_count}} sources · {{new_count}} new since last edition</p>
+    · {{story_count}} stories from {{source_count}} sources · {{new_count}} new since last edition · <a class="cross" href="learn/">Learn AI: The AI Classroom →</a></p>
 </header>
 
 <div class="layout">
