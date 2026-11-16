@@ -31,6 +31,7 @@ LEAD_COUNT = 6           # stories in the "Latest" block
 MAX_PER_TOPIC = 14
 MAX_TOOLS = 8            # stories in the "Tools & builds" block
 TOOLS_WINDOW_HOURS = 96  # launches are rarer, so look back further
+SUMMARY_CHARS = 600     # length of the summary shown when a story is opened
 MAX_EVENTS = 10
 MIN_ITEMS = 5            # fewer than this and the build fails, keeping the old page
 USER_AGENT = "Mozilla/5.0 (compatible; ai-newsletter-bot/1.0)"
@@ -77,7 +78,12 @@ def _clean(text, limit=None):
     text = html.unescape(re.sub(r"<[^>]+>", " ", text or ""))
     text = re.sub(r"\s+", " ", text).strip()
     if limit and len(text) > limit:
-        text = text[:limit].rsplit(" ", 1)[0].rstrip(",.;:") + "…"
+        cut = text[:limit]
+        stop = max(cut.rfind(". "), cut.rfind("? "), cut.rfind("! "))
+        if stop > limit * 0.5:  # prefer ending on a whole sentence
+            text = cut[:stop + 1]
+        else:
+            text = cut.rsplit(" ", 1)[0].rstrip(",.;:") + "…"
     return text
 
 
@@ -129,11 +135,15 @@ def parse_feed(xml_bytes, source):
         )
         if not (title and link and when):
             continue
-        summary = _clean(
-            fields.get("description") or fields.get("summary") or fields.get("content"))
+        summary = _clean(fields.get("description") or fields.get("summary"))
+        if len(summary) < 120:  # a bare teaser: fall back to the article body if the feed has it
+            body = _clean(fields.get("encoded") or fields.get("content"))
+            summary = body if len(body) > len(summary) else summary
+        summary = re.sub(r"\s*The post .{0,200}? (appeared first|first appeared) on .*$", "", summary)
+        summary = re.sub(r"\s*(\[…\]|\[\.\.\.\]|Read more\W*|Continue reading\W*)$", "", summary)
         # Hacker News feeds append link/points boilerplate to the post text.
         summary = re.split(r"\b(?:Article|Comments) URL:", summary)[0]
-        summary = _clean(summary, limit=220)
+        summary = _clean(summary, limit=SUMMARY_CHARS)
         if summary.lower().startswith(title.lower()[:40]):
             summary = ""
         stories.append({"title": title, "url": link, "when": when,
@@ -268,16 +278,19 @@ def _ago(when, now):
     return f"{minutes // 1440}d ago"
 
 
-def render_story(s, now, lead=False):
+def render_story(s, now):
+    """A story is collapsed to its headline; opening it shows the summary and the source link."""
     badge = '<span class="new">New</span>' if s["new"] else ""
-    summary = f'<p class="summary">{esc(s["summary"])}</p>' if s["summary"] and lead else ""
+    summary = esc(s["summary"]) if s["summary"] else "The source did not provide a summary for this story."
     return (
-        f'<li class="story">'
-        f'<a href="{esc(s["url"])}" target="_blank" rel="noopener noreferrer">{esc(s["title"])}</a>'
-        f'{summary}'
-        f'<p class="meta">{badge}<span class="source">{esc(s["source"])}</span>'
-        f'<time datetime="{s["when"].isoformat()}" data-rel>{_ago(s["when"], now)}</time></p>'
-        f'</li>'
+        f'<li><details class="story">'
+        f'<summary><span class="story-title">{esc(s["title"])}</span>'
+        f'<span class="meta">{badge}<span class="source">{esc(s["source"])}</span>'
+        f'<time datetime="{s["when"].isoformat()}" data-rel>{_ago(s["when"], now)}</time></span></summary>'
+        f'<div class="story-body"><p>{summary}</p>'
+        f'<a class="read" href="{esc(s["url"])}" target="_blank" rel="noopener noreferrer">'
+        f'Read the full story at {esc(s["source"])} →</a></div>'
+        f'</details></li>'
     )
 
 
@@ -320,7 +333,7 @@ def render(stories, events, now, template):
         tools_html = (
             '<section id="tools" class="feature"><h2>Tools &amp; builds</h2>'
             '<p class="blurb">New tools, launches and things people are making with AI.</p>'
-            '<ul class="stories">' + "".join(render_story(s, now, lead=True) for s in tools)
+            '<ul class="stories">' + "".join(render_story(s, now) for s in tools)
             + "</ul></section>"
         )
     for name in order:
@@ -348,7 +361,7 @@ def render(stories, events, now, template):
         "sources": esc(", ".join(sources)),
         "nav": "".join(nav),
         "tools": tools_html,
-        "lead": "".join(render_story(s, now, lead=True) for s in lead),
+        "lead": "".join(render_story(s, now) for s in lead),
         "sections": "".join(sections),
         "events": "".join(render_event(e, now.date()) for e in events)
                   or '<li class="event"><p class="event-meta">No upcoming events listed.</p></li>',
