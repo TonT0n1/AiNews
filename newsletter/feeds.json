@@ -16,8 +16,7 @@
   {"name": "Hacker News", "url": "https://hnrss.org/newest?q=AI+OR+LLM+OR+OpenAI+OR+Anthropic&points=200", "ai_only": true},
   {"name": "Show HN", "url": "https://hnrss.org/show?points=30&count=60", "ai_only": true, "section": "tools"},
   {"name": "Launch HN", "url": "https://hnrss.org/launches?count=30", "ai_only": true, "section": "tools"},
-  {"name": "Product Hunt", "url": "https://www.producthunt.com/feed?category=artificial-intelligence", "section": "tools"},
-  {"name": "GitHub Trending", "url": "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml", "ai_only": true, "section": "tools"},
+  {"name": "Product Hunt", "url": "https://www.producthunt.com/feed?category=artificial-intelligence", "ai_only": true, "section": "tools"},
   {"name": "Hugging Face", "url": "https://huggingface.co/blog/feed.xml", "section": "tools"},
   {"name": "Simon Willison", "url": "https://simonwillison.net/atom/everything/", "ai_only": true, "section": "tools"}
 ]

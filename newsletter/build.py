@@ -302,7 +302,11 @@ def render_event(e, today):
 
 
 def render(stories, events, now, template):
-    tools = [s for s in stories if s["section"] == "tools"][:MAX_TOOLS]
+    tools, per_source = [], {}
+    for s in stories:  # newest first, at most three per source so one feed can't fill the block
+        if s["section"] == "tools" and len(tools) < MAX_TOOLS and per_source.get(s["source"], 0) < 3:
+            tools.append(s)
+            per_source[s["source"]] = per_source.get(s["source"], 0) + 1
     lead, rest = split_lead([s for s in stories if s["section"] != "tools"])
     groups = {}
     for s in rest:
