@@ -161,7 +161,10 @@ def edit(stories, topics):
          "text": s.get("text", "")[:MAX_TEXT_CHARS]}
         for i, s in enumerate(stories)
     ]
-    ask = _edit_openai if os.environ.get("OPENAI_API_KEY") else _edit_claude
+    use_openai = bool(os.environ.get("OPENAI_API_KEY"))
+    ask = _edit_openai if use_openai else _edit_claude
+    print(f"  AI: sending {len(payload)} stories to {OPENAI_MODEL if use_openai else MODEL}…",
+          file=sys.stderr)
     result = ask(payload, topics)
     if not result:
         return {}
