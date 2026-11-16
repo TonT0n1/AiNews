@@ -1,19 +1,21 @@
 """
 Optional AI editing pass for the newsletter.
 
-Given the stories collected from the feeds, asks Claude to write a short
-summary of each, rate its importance, pick its section, and flag stories that
-cover the same event. Runs only when ANTHROPIC_API_KEY is set; if the call
-fails for any reason the build carries on with the publishers' own text.
+Given the stories collected from the feeds, asks a language model to write a
+short summary of each, rate its importance, pick its section, and flag stories
+that cover the same event. Uses OpenAI when OPENAI_API_KEY is set, otherwise
+Claude when ANTHROPIC_API_KEY is set. If the call fails for any reason the
+build carries on with the publishers' own text.
 """
 
 import json
+import os
 import sys
 
-import anthropic
-
+# A light OpenAI model by default; set the OPENAI_MODEL variable to use another.
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL") or "gpt-5.4-mini"
 MODEL = "claude-opus-5-5"
-EFFORT = "low"            # low | medium | high — higher is more careful and costs more
+EFFORT = "low"            # Claude only: low | medium | high
 MAX_TEXT_CHARS = 1200     # publisher text sent per story
 
 SYSTEM = """You are the editor of a twice-daily AI news page read by people who follow the AI \
@@ -91,13 +93,8 @@ def _ask(client, payload, topics, with_fallback):
     )
 
 
-def edit(stories, topics):
-    """Return {index: {"summary", "importance", "topic", "duplicate_of"}}, or {} on any failure."""
-    payload = [
-        {"id": i, "source": s["source"], "headline": s["title"],
-         "text": s.get("text", "")[:MAX_TEXT_CHARS]}
-        for i, s in enumerate(stories)
-    ]
+def _edit_claude(payload, topics):
+    import anthropic
     client = anthropic.Anthropic()
     try:
         try:
@@ -106,30 +103,74 @@ def edit(stories, topics):
             print(f"  AI: retrying without refusal fallback ({exc.message})", file=sys.stderr)
             response = _ask(client, payload, topics, with_fallback=False)
     except anthropic.AuthenticationError:
-        print("  AI: the API key was rejected; publishing without AI editing", file=sys.stderr)
-        return {}
+        return _skip("the Anthropic API key was rejected")
     except anthropic.RateLimitError:
-        print("  AI: rate limited; publishing without AI editing", file=sys.stderr)
-        return {}
+        return _skip("rate limited")
     except anthropic.APIStatusError as exc:
-        print(f"  AI: API error {exc.status_code}; publishing without AI editing", file=sys.stderr)
-        return {}
+        return _skip(f"API error {exc.status_code}")
     except anthropic.APIConnectionError:
-        print("  AI: could not reach the API; publishing without AI editing", file=sys.stderr)
-        return {}
-
+        return _skip("could not reach the API")
     if response.stop_reason != "end_turn":
-        print(f"  AI: stopped early ({response.stop_reason}); publishing without AI editing",
-              file=sys.stderr)
-        return {}
-    try:
-        text = next(b.text for b in response.content if b.type == "text")
-        rows = json.loads(text)["stories"]
-    except (StopIteration, ValueError, KeyError, TypeError):
-        print("  AI: unreadable reply; publishing without AI editing", file=sys.stderr)
-        return {}
-
+        return _skip(f"stopped early ({response.stop_reason})")
+    text = next((b.text for b in response.content if b.type == "text"), "")
     usage = response.usage
-    print(f"  AI: edited {len(rows)} stories with {response.model} "
-          f"({usage.input_tokens} tokens in, {usage.output_tokens} out)", file=sys.stderr)
+    return text, response.model, usage.input_tokens, usage.output_tokens
+
+
+def _edit_openai(payload, topics):
+    import openai
+    client = openai.OpenAI()
+    try:
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[
+                {"role": "system", "content": SYSTEM},
+                {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
+            ],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {"name": "edition", "strict": True, "schema": _schema(topics)},
+            },
+        )
+    except openai.AuthenticationError:
+        return _skip("the OpenAI API key was rejected")
+    except openai.NotFoundError:
+        return _skip(f"OpenAI has no model called {OPENAI_MODEL!r}; set OPENAI_MODEL to a current one")
+    except openai.RateLimitError:
+        return _skip("rate limited, or the OpenAI account has no credit")
+    except openai.APIStatusError as exc:
+        return _skip(f"API error {exc.status_code}: {exc.message}")
+    except openai.APIConnectionError:
+        return _skip("could not reach the API")
+    choice = response.choices[0]
+    if choice.finish_reason != "stop" or getattr(choice.message, "refusal", None):
+        return _skip(f"stopped early ({choice.finish_reason})")
+    usage = response.usage
+    return choice.message.content or "", response.model, usage.prompt_tokens, usage.completion_tokens
+
+
+def _skip(reason):
+    print(f"  AI: {reason}; publishing without AI editing", file=sys.stderr)
+    return None
+
+
+def edit(stories, topics):
+    """Return {index: {"summary", "importance", "topic", "duplicate_of"}}, or {} on any failure."""
+    payload = [
+        {"id": i, "source": s["source"], "headline": s["title"],
+         "text": s.get("text", "")[:MAX_TEXT_CHARS]}
+        for i, s in enumerate(stories)
+    ]
+    ask = _edit_openai if os.environ.get("OPENAI_API_KEY") else _edit_claude
+    result = ask(payload, topics)
+    if not result:
+        return {}
+    text, model, tokens_in, tokens_out = result
+    try:
+        rows = json.loads(text)["stories"]
+    except (ValueError, KeyError, TypeError):
+        _skip("unreadable reply")
+        return {}
+    print(f"  AI: edited {len(rows)} stories with {model} "
+          f"({tokens_in} tokens in, {tokens_out} out)", file=sys.stderr)
     return {row["id"]: row for row in rows if isinstance(row.get("id"), int)}

@@ -27,12 +27,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install the Anthropic SDK
-        run: pip install --quiet anthropic
+      - name: Install the AI SDKs
+        run: pip install --quiet openai anthropic
       - name: Build newsletter
         env:
-          # Optional. With this repository secret set, Claude writes the summaries, ranks
-          # stories and merges duplicate coverage. Without it the page uses publishers' text.
+          # Optional. With one of these repository secrets set, an AI model writes the
+          # summaries, ranks stories and merges duplicate coverage (OpenAI is used if both
+          # are set). Without either, the page uses the publishers' own text.
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 newsletter/build.py --out _site/index.html
       - uses: actions/upload-pages-artifact@v4

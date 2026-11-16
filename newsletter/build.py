@@ -206,7 +206,7 @@ def collect(feeds, now):
 
 
 def apply_ai(stories):
-    """Let Claude write summaries, rank, sort into sections and merge duplicate coverage."""
+    """Let a language model write summaries, rank, sort into sections and merge duplicate coverage."""
     from ai import edit  # imported here so the build works without the anthropic package
     topics = [name for name, _ in TOPICS] + [OTHER_TOPIC]
     rows = edit(stories, topics)
@@ -435,13 +435,13 @@ def main():
         sys.exit(f"Only {len(stories)} stories found; refusing to publish an empty edition.")
 
     ai_edited = False
-    if os.environ.get("ANTHROPIC_API_KEY"):
+    if os.environ.get("OPENAI_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"):
         try:
             stories, ai_edited = apply_ai(stories)
         except Exception as exc:  # the edition still goes out, with the publishers' own text
             print(f"  AI: skipped ({type(exc).__name__}: {exc})", file=sys.stderr)
     else:
-        print("  AI: no ANTHROPIC_API_KEY set; using publishers' own text", file=sys.stderr)
+        print("  AI: no OPENAI_API_KEY or ANTHROPIC_API_KEY set; using publishers' own text", file=sys.stderr)
 
     events = load_events(args.events, now.date())
     page = render(stories, events, now, (HERE / "template.html").read_text(encoding="utf-8"),

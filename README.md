@@ -16,16 +16,17 @@ strip on phones).
 
 ## AI editing (optional)
 
-With an Anthropic API key, each build also asks Claude to write a short summary of every
-story, rank them (the top block becomes "Top stories"), choose their section, and merge
-several outlets' coverage of the same event into one entry. Summaries are written only from
-the text publishers put in their feeds, not the full articles.
+With an API key, each build also asks an AI model to write a short summary of every story,
+rank them (the top block becomes "Top stories"), choose their section, and merge several
+outlets' coverage of the same event into one entry. Summaries are written only from the text
+publishers put in their feeds, not the full articles.
 
-To switch it on, add a repository secret named `ANTHROPIC_API_KEY`
-(Settings → Secrets and variables → Actions → New repository secret). Without the secret, or
-if the API call fails, the page is built from the publishers' own text as before.
-
-The model and effort level are constants at the top of `newsletter/ai.py`.
+To switch it on, add a repository secret named `OPENAI_API_KEY`
+(Settings → Secrets and variables → Actions → New repository secret). It uses the light
+`gpt-5.4-mini` model by default; to use a different one, add a repository *variable* named
+`OPENAI_MODEL` on the Variables tab of the same page. An `ANTHROPIC_API_KEY` secret works
+too and uses Claude. Without a key, or if the API call fails, the page is built from the
+publishers' own text as before.
 
 ## Hosting on GitHub Pages
 
