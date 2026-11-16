@@ -9,6 +9,7 @@ and pins the upcoming events from events.json. Standard library only.
 """
 
 import argparse
+import os
 import html
 import json
 import re
@@ -139,6 +140,8 @@ def parse_feed(xml_bytes, source):
         if len(summary) < 120:  # a bare teaser: fall back to the article body if the feed has it
             body = _clean(fields.get("encoded") or fields.get("content"))
             summary = body if len(body) > len(summary) else summary
+        text = max(summary, _clean(fields.get("encoded") or fields.get("content")), key=len)
+        text = re.split(r"\b(?:Article|Comments) URL:", text)[0].strip()
         summary = re.sub(r"\s*The post .{0,200}? (appeared first|first appeared) on .*$", "", summary)
         summary = re.sub(r"\s*(\[…\]|\[\.\.\.\]|Read more\W*|Continue reading\W*)$", "", summary)
         # Hacker News feeds append link/points boilerplate to the post text.
@@ -147,7 +150,7 @@ def parse_feed(xml_bytes, source):
         if summary.lower().startswith(title.lower()[:40]):
             summary = ""
         stories.append({"title": title, "url": link, "when": when,
-                        "summary": summary, "source": source})
+                        "summary": summary, "text": text, "source": source})
     return stories
 
 
@@ -202,7 +205,45 @@ def collect(feeds, now):
     return kept
 
 
+def apply_ai(stories):
+    """Let Claude write summaries, rank, sort into sections and merge duplicate coverage."""
+    from ai import edit  # imported here so the build works without the anthropic package
+    topics = [name for name, _ in TOPICS] + [OTHER_TOPIC]
+    rows = edit(stories, topics)
+    if not rows:
+        return stories, False
+    for i, s in enumerate(stories):
+        row = rows.get(i)
+        if not row:
+            continue
+        if row["summary"].strip():
+            s["summary"] = row["summary"].strip()
+        s["importance"] = min(5, max(1, row["importance"]))
+        if row["topic"] in topics:
+            s["topic"] = row["topic"]
+    kept, removed = [], set()
+    for i, s in enumerate(stories):
+        main = rows.get(i, {}).get("duplicate_of", -1)
+        seen = {i}
+        while main in rows and main not in seen and rows[main].get("duplicate_of", -1) != -1:
+            seen.add(main)  # follow chains to the story everything points at
+            main = rows[main]["duplicate_of"]
+        if isinstance(main, int) and 0 <= main < len(stories) and main != i:
+            target = stories[main]
+            if s["source"] != target["source"]:
+                target.setdefault("also", []).append((s["source"], s["url"]))
+            target["new"] = target["new"] or s["new"]
+            target["importance"] = max(target.get("importance", 1), s.get("importance", 1))
+            if s["section"] == "tools":
+                target["section"] = "tools"
+            removed.add(i)
+    kept = [s for i, s in enumerate(stories) if i not in removed]
+    return kept, True
+
+
 def classify(story):
+    if story.get("topic"):
+        return story["topic"]
     text = story["title"] + " " + story["summary"]
     for name, pattern in TOPICS:
         if pattern.search(text):
@@ -210,16 +251,16 @@ def classify(story):
     return OTHER_TOPIC
 
 
-def split_lead(stories):
-    """Newest stories for the top block, at most two per source."""
-    lead, rest, per_source = [], [], {}
-    for s in stories:
+def split_lead(stories, ranked):
+    """Stories for the top block, at most two per source: the most important ones when the
+    AI pass has ranked them, otherwise simply the newest."""
+    lead, per_source = [], {}
+    pool = sorted(stories, key=lambda s: -s.get("importance", 0)) if ranked else stories
+    for s in pool:  # sorted() is stable, so equal importance stays newest-first
         if len(lead) < LEAD_COUNT and per_source.get(s["source"], 0) < 2:
             lead.append(s)
             per_source[s["source"]] = per_source.get(s["source"], 0) + 1
-        else:
-            rest.append(s)
-    return lead, rest
+    return lead, [s for s in stories if not any(s is x for x in lead)]
 
 
 # --------------------------------------------------------------------------
@@ -282,12 +323,18 @@ def render_story(s, now):
     """A story is collapsed to its headline; opening it shows the summary and the source link."""
     badge = '<span class="new">New</span>' if s["new"] else ""
     summary = esc(s["summary"]) if s["summary"] else "The source did not provide a summary for this story."
+    also = ""
+    if s.get("also"):
+        links = ", ".join(
+            f'<a href="{esc(url)}" target="_blank" rel="noopener noreferrer">{esc(source)}</a>'
+            for source, url in s["also"])
+        also = f'<p class="also">Also covered by {links}</p>'
     return (
         f'<li><details class="story">'
         f'<summary><span class="story-title">{esc(s["title"])}</span>'
         f'<span class="meta">{badge}<span class="source">{esc(s["source"])}</span>'
         f'<time datetime="{s["when"].isoformat()}" data-rel>{_ago(s["when"], now)}</time></span></summary>'
-        f'<div class="story-body"><p>{summary}</p>'
+        f'<div class="story-body"><p>{summary}</p>{also}'
         f'<a class="read" href="{esc(s["url"])}" target="_blank" rel="noopener noreferrer">'
         f'Read the full story at {esc(s["source"])} →</a></div>'
         f'</details></li>'
@@ -314,19 +361,20 @@ def render_event(e, today):
     )
 
 
-def render(stories, events, now, template):
+def render(stories, events, now, template, ai_edited=False):
     tools, per_source = [], {}
     for s in stories:  # newest first, at most three per source so one feed can't fill the block
         if s["section"] == "tools" and len(tools) < MAX_TOOLS and per_source.get(s["source"], 0) < 3:
             tools.append(s)
             per_source[s["source"]] = per_source.get(s["source"], 0) + 1
-    lead, rest = split_lead([s for s in stories if s["section"] != "tools"])
+    lead, rest = split_lead([s for s in stories if s["section"] != "tools"], ai_edited)
     groups = {}
     for s in rest:
         groups.setdefault(classify(s), []).append(s)
     order = [name for name, _ in TOPICS] + [OTHER_TOPIC]
 
-    sections, nav = [], ['<a href="#latest">Latest</a>']
+    lead_title = "Top stories" if ai_edited else "Latest"
+    sections, nav = [], [f'<a href="#latest">{lead_title}</a>']
     tools_html = ""
     if tools:
         nav.insert(0, '<a href="#tools">Tools &amp; builds</a>')
@@ -361,6 +409,9 @@ def render(stories, events, now, template):
         "sources": esc(", ".join(sources)),
         "nav": "".join(nav),
         "tools": tools_html,
+        "lead_title": lead_title,
+        "ai_note": (" Summaries, ranking and grouping are written by AI from the publishers' text "
+                    "and can contain mistakes; follow the link for the original.") if ai_edited else "",
         "lead": "".join(render_story(s, now) for s in lead),
         "sections": "".join(sections),
         "events": "".join(render_event(e, now.date()) for e in events)
@@ -383,8 +434,18 @@ def main():
     if len(stories) < MIN_ITEMS:
         sys.exit(f"Only {len(stories)} stories found; refusing to publish an empty edition.")
 
+    ai_edited = False
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        try:
+            stories, ai_edited = apply_ai(stories)
+        except Exception as exc:  # the edition still goes out, with the publishers' own text
+            print(f"  AI: skipped ({type(exc).__name__}: {exc})", file=sys.stderr)
+    else:
+        print("  AI: no ANTHROPIC_API_KEY set; using publishers' own text", file=sys.stderr)
+
     events = load_events(args.events, now.date())
-    page = render(stories, events, now, (HERE / "template.html").read_text(encoding="utf-8"))
+    page = render(stories, events, now, (HERE / "template.html").read_text(encoding="utf-8"),
+                  ai_edited)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page, encoding="utf-8")

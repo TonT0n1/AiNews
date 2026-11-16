@@ -8,11 +8,24 @@ strip on phones).
 
 - `build.py` fetches the RSS/Atom feeds in `feeds.json`, keeps the last 48 hours,
   de-duplicates, puts launches and projects in a "Tools & builds" block at the top, groups the rest by topic and writes one self-contained HTML file.
-  Standard library only.
+  Standard library only, apart from the optional AI step.
 - `events.json` is the pinned events list. Past events drop off automatically;
   countdowns update in the browser. Set `"tentative": true` to show a "TBC" tag.
 - `.github/workflows/newsletter.yml` runs the build at 06:17 and 18:17 UTC and
   publishes it to GitHub Pages.
+
+## AI editing (optional)
+
+With an Anthropic API key, each build also asks Claude to write a short summary of every
+story, rank them (the top block becomes "Top stories"), choose their section, and merge
+several outlets' coverage of the same event into one entry. Summaries are written only from
+the text publishers put in their feeds, not the full articles.
+
+To switch it on, add a repository secret named `ANTHROPIC_API_KEY`
+(Settings → Secrets and variables → Actions → New repository secret). Without the secret, or
+if the API call fails, the page is built from the publishers' own text as before.
+
+The model and effort level are constants at the top of `newsletter/ai.py`.
 
 ## Hosting on GitHub Pages
 
