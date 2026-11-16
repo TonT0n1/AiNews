@@ -377,7 +377,7 @@ def render(stories, events, now, template, ai_edited=False):
     sections, nav = [], [f'<a href="#latest">{lead_title}</a>']
     tools_html = ""
     if tools:
-        nav.insert(0, '<a href="#tools">Tools &amp; builds</a>')
+        nav.append('<a href="#tools">Tools &amp; builds</a>')
         tools_html = (
             '<section id="tools" class="feature"><h2>Tools &amp; builds</h2>'
             '<p class="blurb">New tools, launches and things people are making with AI.</p>'
