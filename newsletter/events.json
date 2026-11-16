@@ -1,0 +1,67 @@
+[
+  {
+    "name": "AWS re:Invent 2026",
+    "start": "2026-11-30",
+    "end": "2026-12-04",
+    "location": "Las Vegas",
+    "kind": "Conference",
+    "url": "https://reinvent.awsevents.com/"
+  },
+  {
+    "name": "NeurIPS 2026",
+    "start": "2026-12-06",
+    "end": "2026-12-12",
+    "location": "Sydney (satellites: Atlanta, Paris)",
+    "kind": "Research",
+    "url": "https://neurips.cc/Conferences/2026/Dates"
+  },
+  {
+    "name": "CES 2027",
+    "start": "2027-01-06",
+    "end": "2027-01-09",
+    "location": "Las Vegas",
+    "kind": "Conference",
+    "url": "https://www.ces.tech/"
+  },
+  {
+    "name": "AAAI-27",
+    "start": "2027-02-16",
+    "end": "2027-02-23",
+    "location": "Montréal",
+    "kind": "Research",
+    "url": "https://aaai.org/conference/aaai/"
+  },
+  {
+    "name": "NVIDIA GTC 2027",
+    "start": "2027-03-14",
+    "end": "2027-03-18",
+    "location": "San Jose",
+    "kind": "Conference",
+    "url": "https://www.nvidia.com/en-us/gtc/"
+  },
+  {
+    "name": "ICLR 2027",
+    "start": "2027-04-26",
+    "end": "2027-04-30",
+    "location": "Venue to be confirmed",
+    "kind": "Research",
+    "tentative": true,
+    "url": "https://iclr.cc/Conferences/2027/Dates"
+  },
+  {
+    "name": "Geneva AI Summit 2027",
+    "start": "2027-06-21",
+    "end": "2027-06-22",
+    "location": "Palexpo, Geneva",
+    "kind": "Policy",
+    "url": "https://www.bakom.admin.ch/en/geneva-ai-summit-2027-international-summit-on-artificial-intelligence-in-geneva"
+  },
+  {
+    "name": "EU AI Act: high-risk (Annex III) rules apply",
+    "start": "2027-12-02",
+    "location": "European Union",
+    "kind": "Deadline",
+    "tentative": true,
+    "url": "https://artificialintelligenceact.eu/implementation-timeline/"
+  }
+]

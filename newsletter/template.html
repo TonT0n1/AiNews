@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="AI news, refreshed twice a day, with the key upcoming events pinned.">
+<title>{{title}}</title>
+<style>
+  :root {
+    --bg: #f6f3ec; --surface: #fffdf8; --ink: #1b1a17; --muted: #6a665d;
+    --rule: #ddd6c7; --accent: #b3401f; --accent-soft: #f4e2d9; --pin: #1f2a44; --pin-ink: #f3efe6;
+    --pin-muted: #b3bad0; --pin-rule: #36425f; --pin-accent: #ffb38a;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14151a; --surface: #1c1e25; --ink: #ece8df; --muted: #9c988e;
+      --rule: #2f323c; --accent: #ff9a6b; --accent-soft: #3a261d; --pin: #0d1220;
+      --pin-rule: #2a3350;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 9rem; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--sans); }
+  a { color: inherit; text-decoration: none; }
+  a:hover, a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+  p { margin: 0; }
+
+  .masthead { max-width: 1180px; margin: 0 auto; padding: 28px 16px 14px; text-align: center; }
+  .masthead .kicker { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .masthead h1 { font: 700 clamp(2.2rem, 7vw, 4rem)/1.05 var(--serif); margin: 6px 0 10px; letter-spacing: -.02em; }
+  .masthead .dateline { color: var(--muted); font-size: .9rem; border-block: 1px solid var(--rule); padding: 8px 0; }
+  .masthead .dateline b { color: var(--ink); font-weight: 600; }
+
+  .layout { max-width: 1180px; margin: 0 auto; padding: 0 16px 48px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+
+  /* Pinned events: a sticky strip on phones, a sticky sidebar on wide screens */
+  .pinned { position: sticky; top: 0; z-index: 5; background: var(--pin); color: var(--pin-ink);
+            margin: 0 -16px; padding: 10px 0 12px; box-shadow: 0 6px 16px rgb(0 0 0 / .18); }
+  .pinned h2 { font: 600 .72rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase;
+               margin: 0 16px 8px; color: var(--pin-accent); }
+  .events { list-style: none; margin: 0; padding: 0 16px; display: flex; gap: 10px;
+            overflow-x: auto; scrollbar-width: thin; }
+  .event { flex: 0 0 210px; border: 1px solid var(--pin-rule); border-radius: 10px; padding: 9px 11px; }
+  .event.live { border-color: var(--pin-accent); }
+  .countdown { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--pin-accent); }
+  .event-name { font: 600 1rem/1.25 var(--serif); margin: 2px 0; }
+  .event-meta, .event-kind { font-size: .78rem; color: var(--pin-muted); }
+  .event-kind { display: none; }
+  .tentative { font: 600 .62rem/1 var(--sans); letter-spacing: .08em; border: 1px solid var(--pin-muted);
+               color: var(--pin-muted); border-radius: 4px; padding: 2px 4px; margin-left: 6px; vertical-align: middle; }
+
+  nav.topics { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; }
+  nav.topics a { white-space: nowrap; font-size: .82rem; border: 1px solid var(--rule); border-radius: 999px;
+                 padding: 5px 12px; background: var(--surface); }
+  nav.topics a:hover { border-color: var(--accent); text-decoration: none; }
+
+  section { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 18px 18px 6px; margin-top: 18px; }
+  section h2 { font: 700 .78rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+               margin: 0 0 6px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+  .stories { list-style: none; margin: 0; padding: 0; }
+  .story { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .story:last-child { border-bottom: 0; }
+  .story > a { font: 600 1.06rem/1.3 var(--serif); display: block; text-wrap: pretty; }
+  .story > a:visited { color: var(--muted); }
+  .summary { color: var(--muted); font-size: .92rem; margin-top: 4px; }
+  .meta { font-size: .76rem; color: var(--muted); margin-top: 5px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .meta .source { font-weight: 600; color: var(--ink); }
+  .new { background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: .66rem;
+         letter-spacing: .08em; text-transform: uppercase; border-radius: 4px; padding: 2px 6px; }
+  #latest .story > a { font-size: 1.3rem; }
+
+  footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 40px; color: var(--muted); font-size: .8rem; }
+
+  @media (min-width: 900px) {
+    .layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; align-items: start; }
+    .content { grid-column: 1; grid-row: 1; }
+    .pinned { grid-column: 2; grid-row: 1; top: 16px; margin: 18px 0 0; border-radius: 14px; padding: 18px 0 8px;
+              max-height: calc(100vh - 32px); overflow-y: auto; }
+    .pinned h2 { margin: 0 18px 6px; }
+    .events { flex-direction: column; gap: 0; padding: 0 18px; overflow: visible; }
+    .event { flex: none; border: 0; border-bottom: 1px solid var(--pin-rule); border-radius: 0; padding: 12px 0; }
+    .event:last-child { border-bottom: 0; }
+    .event.live { border-color: var(--pin-rule); }
+    .event-kind { display: block; }
+    #latest .stories { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
+    #latest .story:nth-last-child(-n+2) { border-bottom: 0; }
+    html { scroll-padding-top: 1rem; }
+  }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <p class="kicker">{{edition}}</p>
+  <h1>{{title}}</h1>
+  <p class="dateline"><b>{{date_long}}</b> · updated <time datetime="{{built_iso}}" data-rel>{{built_text}}</time>
+    · {{story_count}} stories from {{source_count}} sources · {{new_count}} new since last edition</p>
+</header>
+
+<div class="layout">
+  <aside class="pinned" aria-label="Upcoming events">
+    <h2>📌 Pinned · Upcoming events</h2>
+    <ol class="events">{{events}}</ol>
+  </aside>
+
+  <main class="content">
+    <nav class="topics" aria-label="Sections">{{nav}}</nav>
+    <section id="latest"><h2>Latest</h2><ul class="stories">{{lead}}</ul></section>
+    {{sections}}
+  </main>
+</div>
+
+<footer>
+  <p>Refreshed automatically twice a day. Headlines link to their original publishers: {{sources}}.</p>
+</footer>
+
+<script>
+(function () {
+  // Keep "x ago" and event countdowns accurate between the twice-daily rebuilds.
+  function ago(d) {
+    var m = Math.max(1, Math.round((Date.now() - d) / 60000));
+    if (m < 60) return m + "m ago";
+    if (m < 2880) return Math.floor(m / 60) + "h ago";
+    return Math.floor(m / 1440) + "d ago";
+  }
+  document.querySelectorAll("time[data-rel]").forEach(function (t) {
+    var d = Date.parse(t.dateTime);
+    if (!isNaN(d)) { t.title = new Date(d).toLocaleString(); t.textContent = ago(d); }
+  });
+  var now = new Date(), today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  document.querySelectorAll(".event[data-start]").forEach(function (e) {
+    var start = Date.parse(e.dataset.start), end = Date.parse(e.dataset.end);
+    var days = Math.round((start - today) / 864e5), label;
+    if (end < today) { e.remove(); return; }
+    if (days <= 0) { label = "Happening now"; e.classList.add("live"); }
+    else if (days === 1) label = "Tomorrow";
+    else if (days < 14) label = "In " + days + " days";
+    else if (days < 70) label = "In " + Math.round(days / 7) + " weeks";
+    else label = "In " + Math.round(days / 30.4) + " months";
+    e.querySelector(".countdown").textContent = label;
+  });
+})();
+</script>
+</body>
+</html>

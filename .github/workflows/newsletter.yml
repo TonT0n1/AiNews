@@ -1,0 +1,43 @@
+name: AI newsletter
+
+on:
+  schedule:
+    # Twice a day: 06:17 and 18:17 UTC
+    - cron: "17 6,18 * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - "newsletter/**"
+      - ".github/workflows/newsletter.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: newsletter-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build newsletter
+        run: python3 newsletter/build.py --out _site/index.html
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    # Only the default branch publishes; other branches just prove the build works.
+    if: github.ref_name == github.event.repository.default_branch
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
