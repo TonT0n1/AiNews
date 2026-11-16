@@ -1,5 +1,12 @@
 [
   {
+    "name": "Anthropic IPO: first day of trading (Nasdaq: ANT)",
+    "start": "2026-11-19",
+    "location": "Nasdaq · prices 18 Nov",
+    "kind": "Markets",
+    "url": "https://www.nasdaqtrader.com/TraderNews.aspx?id=DTN2026-28"
+  },
+  {
     "name": "AWS re:Invent 2026",
     "start": "2026-11-30",
     "end": "2026-12-04",

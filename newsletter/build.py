@@ -29,7 +29,7 @@ NEW_HOURS = 12           # "new since the last edition"
 MAX_PER_SOURCE = 8       # stop one busy feed drowning the rest
 LEAD_COUNT = 6           # stories in the "Latest" block
 MAX_PER_TOPIC = 14
-MAX_EVENTS = 8
+MAX_EVENTS = 10
 MIN_ITEMS = 5            # fewer than this and the build fails, keeping the old page
 USER_AGENT = "Mozilla/5.0 (compatible; ai-newsletter-bot/1.0)"
 
