@@ -44,7 +44,8 @@ python3 newsletter/build.py --out _site/index.html
 ## Customising
 
 - Add or remove sources in `feeds.json`. `"ai_only": true` keeps only AI-related
-  stories from a general feed; `"section": "tools"` sends a feed to the Tools & builds block.
+  stories from a general feed; `"aggregator": true` marks a feed that
+  relays other publishers (Google News, Techmeme) so stories are credited to the real source; `"section": "tools"` sends a feed to the Tools & builds block.
 - Edit `events.json` to change what is pinned.
 - Change the schedule in the workflow's `cron` line (times are UTC).
 - Title, time window and limits are constants at the top of `build.py`.

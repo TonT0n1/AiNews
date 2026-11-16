@@ -30,6 +30,8 @@ NEW_HOURS = 12           # "new since the last edition"
 MAX_PER_SOURCE = 8       # stop one busy feed drowning the rest
 LEAD_COUNT = 6           # stories in the "Latest" block
 MAX_PER_TOPIC = 14
+MAX_AGG_TOTAL = 30       # stories taken from aggregator feeds (Google News, Techmeme)
+MAX_AGG_PER_SOURCE = 3   # ...and from any one publisher found through them
 MAX_TOOLS = 8            # stories in the "Tools & builds" block
 TOOLS_WINDOW_HOURS = 96  # launches are rarer, so look back further
 SUMMARY_CHARS = 600     # length of the summary shown when a story is opened
@@ -109,7 +111,7 @@ def _safe_url(url):
     return url if urlsplit(url).scheme in ("http", "https") else ""
 
 
-def parse_feed(xml_bytes, source):
+def parse_feed(xml_bytes, source, aggregator=False):
     """Return a list of story dicts from RSS or Atom bytes."""
     root = ET.fromstring(xml_bytes)
     stories = []
@@ -136,7 +138,10 @@ def parse_feed(xml_bytes, source):
         )
         if not (title and link and when):
             continue
-        summary = _clean(fields.get("description") or fields.get("summary"))
+        publisher, drop_text = source, False
+        if aggregator:
+            title, link, publisher, drop_text = _unwrap_aggregated(title, link, fields, source)
+        summary = "" if drop_text else _clean(fields.get("description") or fields.get("summary"))
         if len(summary) < 120:  # a bare teaser: fall back to the article body if the feed has it
             body = _clean(fields.get("encoded") or fields.get("content"))
             summary = body if len(body) > len(summary) else summary
@@ -150,8 +155,31 @@ def parse_feed(xml_bytes, source):
         if summary.lower().startswith(title.lower()[:40]):
             summary = ""
         stories.append({"title": title, "url": link, "when": when,
-                        "summary": summary, "text": text, "source": source})
+                        "summary": summary, "text": "" if drop_text else text,
+                        "source": publisher, "agg": aggregator})
     return stories
+
+
+def _unwrap_aggregated(title, link, fields, fallback):
+    """Aggregators wrap other publishers' stories: recover the real publisher, headline and link."""
+    publisher = _clean(fields.get("source"))
+    drop_text = False
+    if publisher:  # Google News: "Headline - Publisher", and the description is only a link list
+        if title.endswith(" - " + publisher):
+            title = title[: -len(publisher) - 3].strip()
+        drop_text = True
+    else:          # Techmeme: "Headline (Author / Publisher)"
+        m = re.search(r"\s*\(([^()]+)\)$", title)
+        if m:
+            publisher = m.group(1).split("/")[-1].strip()
+            title = title[: m.start()].strip()
+    own_host = urlsplit(link).netloc
+    for href in re.findall(r'href="([^"]+)"', fields.get("description") or "", flags=re.I):
+        host = urlsplit(html.unescape(href)).netloc
+        if host and host != own_host and "google." not in host and _safe_url(html.unescape(href)):
+            link = html.unescape(href)  # point straight at the article, not the aggregator page
+            break
+    return title, link, publisher or fallback, drop_text
 
 
 def fetch_feed(feed):
@@ -161,7 +189,7 @@ def fetch_feed(feed):
     })
     try:
         with urllib.request.urlopen(req, timeout=25) as resp:
-            stories = parse_feed(resp.read(), feed["name"])
+            stories = parse_feed(resp.read(), feed["name"], bool(feed.get("aggregator")))
     except Exception as exc:  # one dead feed must not sink the edition
         print(f"  FAIL {feed['name']}: {exc}", file=sys.stderr)
         return []
@@ -171,6 +199,10 @@ def fetch_feed(feed):
         s["section"] = feed.get("section", "news")
         s["title"] = re.sub(r"^(Show|Launch) HN:\s*", "", s["title"])
     print(f"  ok   {feed['name']}: {len(stories)} stories", file=sys.stderr)
+    if feed.get("aggregator") and stories:
+        eg = stories[0]
+        print(f"       e.g. [{eg['source']}] {eg['title'][:70]} -> {urlsplit(eg['url']).netloc}",
+              file=sys.stderr)
     return stories
 
 
@@ -185,6 +217,7 @@ def collect(feeds, now):
     stories.sort(key=lambda s: s["when"], reverse=True)
 
     seen_urls, seen_titles, per_source, kept = {}, {}, {}, []
+    agg_total, agg_per_source = 0, {}
     for s in stories:
         hours = TOOLS_WINDOW_HOURS if s["section"] == "tools" else WINDOW_HOURS
         if s["when"] < now - timedelta(hours=hours):
@@ -195,11 +228,20 @@ def collect(feeds, now):
         if dupe:
             if s["section"] == "tools":  # a launch also seen in a news feed stays a launch
                 dupe["section"] = "tools"
+            if dupe["agg"] and not s["agg"]:  # prefer the publisher's own feed, which has the text
+                dupe.update(url=s["url"], summary=s["summary"], text=s["text"],
+                            source=s["source"], agg=False)
             continue
-        if per_source.get(s["source"], 0) >= MAX_PER_SOURCE:
+        name = s["source"].lower()
+        if per_source.get(name, 0) >= MAX_PER_SOURCE:
             continue
+        if s["agg"]:
+            if agg_total >= MAX_AGG_TOTAL or agg_per_source.get(name, 0) >= MAX_AGG_PER_SOURCE:
+                continue
+            agg_total += 1
+            agg_per_source[name] = agg_per_source.get(name, 0) + 1
         seen_urls[url_key] = seen_titles[title_key] = s
-        per_source[s["source"]] = per_source.get(s["source"], 0) + 1
+        per_source[name] = per_source.get(name, 0) + 1
         s["new"] = s["when"] >= now - timedelta(hours=NEW_HOURS)
         kept.append(s)
     return kept
@@ -237,7 +279,9 @@ def apply_ai(stories):
             if s["section"] == "tools":
                 target["section"] = "tools"
             removed.add(i)
-    kept = [s for i, s in enumerate(stories) if i not in removed]
+    # Aggregators pull in some filler; drop what the model rates as barely relevant.
+    kept = [s for i, s in enumerate(stories)
+            if i not in removed and not (s["agg"] and s.get("importance", 3) <= 1)]
     return kept, True
 
 
