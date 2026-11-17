@@ -99,7 +99,7 @@
 
   footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 40px; color: var(--muted); font-size: .8rem; }
 
-  @media (min-width: 700px) { .routes { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 700px) { .routes { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 900px) {
     .layout { grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
     .content { grid-column: 1; grid-row: 1; }
@@ -120,7 +120,7 @@
   <p class="kicker">A free programme, start to frontier</p>
   <h1>{{title}}</h1>
   <p class="lede">The best free tutorials on the internet, arranged in order: from what a neural network is,
-    through how language models are built and trained, to building agents that do real work.</p>
+    through how language models are built and trained, to building agents and running it all on real hardware.</p>
   <p class="dateline">{{total}} hand-picked resources in {{stage_count}} stages · links checked
     <time datetime="{{built_iso}}">{{built_text}}</time> · <a href="../">Today's AI news →</a></p>
 </header>

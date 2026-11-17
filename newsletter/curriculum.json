@@ -3,17 +3,44 @@
     {
       "name": "I want to use AI well",
       "for": "No coding. You want to understand what these tools are and get far more out of them.",
-      "stages": ["start", "prompting", "agents"]
+      "stages": [
+        "start",
+        "prompting",
+        "agents"
+      ]
     },
     {
       "name": "I want to build with AI",
       "for": "You can code a little (or want to) and plan to make apps, automations and agents.",
-      "stages": ["start", "prompting", "apps", "agents", "finetune"]
+      "stages": [
+        "start",
+        "prompting",
+        "apps",
+        "agents",
+        "finetune"
+      ]
     },
     {
       "name": "I want to understand and train models",
       "for": "You want to know how models work inside, build one, and train or fine-tune your own.",
-      "stages": ["start", "foundations", "deep-learning", "llms", "finetune", "frontier"]
+      "stages": [
+        "start",
+        "foundations",
+        "deep-learning",
+        "llms",
+        "finetune",
+        "frontier"
+      ]
+    },
+    {
+      "name": "I want to run and host models",
+      "for": "You want to run models on your own hardware or a cluster: choosing GPUs, sharing them, and serving at scale.",
+      "stages": [
+        "start",
+        "hardware",
+        "finetune",
+        "apps"
+      ]
     }
   ],
   "stages": [
@@ -23,12 +50,66 @@
       "blurb": "No maths, no code. A clear mental model of what a neural network and a language model are, what they are good and bad at, and how people really use them.",
       "outcome": "You can explain in plain words how a chatbot produces an answer, and you know where it can't be trusted.",
       "items": [
-        {"id": "3b1b-llm-brief", "title": "Large Language Models explained briefly", "by": "3Blue1Brown", "url": "https://www.youtube.com/watch?v=LPZh9BOjkQs", "format": "Video", "level": "Beginner", "time": "8 min", "why": "The best short visual explanation of what an LLM is doing. Watch this first."},
-        {"id": "karpathy-intro-llms", "title": "Intro to Large Language Models", "by": "Andrej Karpathy", "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g", "format": "Video", "level": "Beginner", "time": "1 hr", "why": "A one-hour general-audience talk covering how LLMs are made, where they are heading and their security problems."},
-        {"id": "3b1b-neural-network", "title": "But what is a neural network?", "by": "3Blue1Brown", "url": "https://www.youtube.com/watch?v=aircAruvnKk", "format": "Video", "level": "Beginner", "time": "20 min", "why": "Builds the idea of a neural network from scratch with animation instead of equations."},
-        {"id": "elements-of-ai", "title": "Elements of AI", "by": "University of Helsinki & MinnaLearn", "url": "https://www.elementsofai.com/", "format": "Course", "level": "Beginner", "time": "≈ 30 hrs", "why": "A gentle, text-based course for complete beginners on what AI is and isn't. No programming needed."},
-        {"id": "genai-for-everyone", "title": "Generative AI for Everyone", "by": "Andrew Ng, DeepLearning.AI", "url": "https://www.deeplearning.ai/courses/generative-ai-for-everyone/", "format": "Course", "level": "Beginner", "time": "≈ 5 hrs", "why": "A non-technical tour of what generative AI can do at work and how projects are run. Free to audit."},
-        {"id": "karpathy-how-i-use", "title": "How I use LLMs", "by": "Andrej Karpathy", "url": "https://www.youtube.com/watch?v=EWvNQjAaOHw", "format": "Video", "level": "Beginner", "time": "2 hrs", "why": "A practical walk through everyday use: search, files, voice, images, code and custom assistants."}
+        {
+          "id": "3b1b-llm-brief",
+          "title": "Large Language Models explained briefly",
+          "by": "3Blue1Brown",
+          "url": "https://www.youtube.com/watch?v=LPZh9BOjkQs",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "8 min",
+          "why": "The best short visual explanation of what an LLM is doing. Watch this first."
+        },
+        {
+          "id": "karpathy-intro-llms",
+          "title": "Intro to Large Language Models",
+          "by": "Andrej Karpathy",
+          "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "1 hr",
+          "why": "A one-hour general-audience talk covering how LLMs are made, where they are heading and their security problems."
+        },
+        {
+          "id": "3b1b-neural-network",
+          "title": "But what is a neural network?",
+          "by": "3Blue1Brown",
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "20 min",
+          "why": "Builds the idea of a neural network from scratch with animation instead of equations."
+        },
+        {
+          "id": "elements-of-ai",
+          "title": "Elements of AI",
+          "by": "University of Helsinki & MinnaLearn",
+          "url": "https://www.elementsofai.com/",
+          "format": "Course",
+          "level": "Beginner",
+          "time": "≈ 30 hrs",
+          "why": "A gentle, text-based course for complete beginners on what AI is and isn't. No programming needed."
+        },
+        {
+          "id": "genai-for-everyone",
+          "title": "Generative AI for Everyone",
+          "by": "Andrew Ng, DeepLearning.AI",
+          "url": "https://www.deeplearning.ai/courses/generative-ai-for-everyone/",
+          "format": "Course",
+          "level": "Beginner",
+          "time": "≈ 5 hrs",
+          "why": "A non-technical tour of what generative AI can do at work and how projects are run. Free to audit."
+        },
+        {
+          "id": "karpathy-how-i-use",
+          "title": "How I use LLMs",
+          "by": "Andrej Karpathy",
+          "url": "https://www.youtube.com/watch?v=EWvNQjAaOHw",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "2 hrs",
+          "why": "A practical walk through everyday use: search, files, voice, images, code and custom assistants."
+        }
       ]
     },
     {
@@ -37,13 +118,76 @@
       "blurb": "Getting good results is a skill. These teach you to give clear context, structure a request, check the output and know when to push back.",
       "outcome": "You can write a prompt that reliably gets what you want, and diagnose why one didn't.",
       "items": [
-        {"id": "anthropic-academy", "title": "Anthropic Academy: AI Fluency and Claude 101", "by": "Anthropic", "url": "https://www.anthropic.com/learn", "format": "Course", "level": "Beginner", "time": "≈ 3–4 hrs", "why": "Free no-code courses on working with AI effectively and responsibly. Start with AI Fluency."},
-        {"id": "anthropic-prompt-tutorial", "title": "Prompt engineering interactive tutorial", "by": "Anthropic", "url": "https://github.com/anthropics/prompt-eng-interactive-tutorial", "format": "Hands-on", "level": "Beginner", "time": "≈ 4 hrs", "why": "Nine chapters with exercises, from basic structure to complex prompts. The most thorough free prompting course."},
-        {"id": "anthropic-prompt-docs", "title": "Prompt engineering overview", "by": "Anthropic docs", "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview", "format": "Reading", "level": "Beginner", "time": "1 hr", "why": "A concise reference of the techniques that matter, in order of impact."},
-        {"id": "openai-prompt-guide", "title": "Prompt engineering guide", "by": "OpenAI docs", "url": "https://platform.openai.com/docs/guides/prompt-engineering", "format": "Reading", "level": "Beginner", "time": "45 min", "why": "OpenAI's own strategies and tactics. Worth reading alongside Anthropic's to see what is common to both."},
-        {"id": "dlai-prompt-dev", "title": "ChatGPT Prompt Engineering for Developers", "by": "DeepLearning.AI & OpenAI", "url": "https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/", "format": "Course", "level": "Beginner", "time": "1.5 hrs", "why": "A short video course with notebooks. Good first step from chatting to calling a model from code."},
-        {"id": "prompting-guide", "title": "Prompt Engineering Guide", "by": "DAIR.AI", "url": "https://www.promptingguide.ai/", "format": "Reading", "level": "Intermediate", "time": "Reference", "why": "An encyclopaedia of prompting techniques with examples and the papers behind them."},
-        {"id": "weng-prompting", "title": "Prompt Engineering", "by": "Lilian Weng", "url": "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/", "format": "Reading", "level": "Intermediate", "time": "45 min", "why": "A research-grounded survey of why techniques like few-shot and chain-of-thought work."}
+        {
+          "id": "anthropic-academy",
+          "title": "Anthropic Academy: AI Fluency and Claude 101",
+          "by": "Anthropic",
+          "url": "https://www.anthropic.com/learn",
+          "format": "Course",
+          "level": "Beginner",
+          "time": "≈ 3–4 hrs",
+          "why": "Free no-code courses on working with AI effectively and responsibly. Start with AI Fluency."
+        },
+        {
+          "id": "anthropic-prompt-tutorial",
+          "title": "Prompt engineering interactive tutorial",
+          "by": "Anthropic",
+          "url": "https://github.com/anthropics/prompt-eng-interactive-tutorial",
+          "format": "Hands-on",
+          "level": "Beginner",
+          "time": "≈ 4 hrs",
+          "why": "Nine chapters with exercises, from basic structure to complex prompts. The most thorough free prompting course."
+        },
+        {
+          "id": "anthropic-prompt-docs",
+          "title": "Prompt engineering overview",
+          "by": "Anthropic docs",
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
+          "format": "Reading",
+          "level": "Beginner",
+          "time": "1 hr",
+          "why": "A concise reference of the techniques that matter, in order of impact."
+        },
+        {
+          "id": "openai-prompt-guide",
+          "title": "Prompt engineering guide",
+          "by": "OpenAI docs",
+          "url": "https://platform.openai.com/docs/guides/prompt-engineering",
+          "format": "Reading",
+          "level": "Beginner",
+          "time": "45 min",
+          "why": "OpenAI's own strategies and tactics. Worth reading alongside Anthropic's to see what is common to both."
+        },
+        {
+          "id": "dlai-prompt-dev",
+          "title": "ChatGPT Prompt Engineering for Developers",
+          "by": "DeepLearning.AI & OpenAI",
+          "url": "https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/",
+          "format": "Course",
+          "level": "Beginner",
+          "time": "1.5 hrs",
+          "why": "A short video course with notebooks. Good first step from chatting to calling a model from code."
+        },
+        {
+          "id": "prompting-guide",
+          "title": "Prompt Engineering Guide",
+          "by": "DAIR.AI",
+          "url": "https://www.promptingguide.ai/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "Reference",
+          "why": "An encyclopaedia of prompting techniques with examples and the papers behind them."
+        },
+        {
+          "id": "weng-prompting",
+          "title": "Prompt Engineering",
+          "by": "Lilian Weng",
+          "url": "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "45 min",
+          "why": "A research-grounded survey of why techniques like few-shot and chain-of-thought work."
+        }
       ]
     },
     {
@@ -52,15 +196,96 @@
       "blurb": "The groundwork for everything technical that follows. You need less maths than you fear: vectors, matrices, derivatives and probability, plus enough Python to run a notebook.",
       "outcome": "You can train and evaluate a simple model on real data and explain what overfitting is.",
       "items": [
-        {"id": "kaggle-python", "title": "Python", "by": "Kaggle Learn", "url": "https://www.kaggle.com/learn/python", "format": "Hands-on", "level": "Beginner", "time": "≈ 5 hrs", "why": "The fastest route to enough Python for ML, in the browser with nothing to install."},
-        {"id": "3b1b-linear-algebra", "title": "Essence of linear algebra", "by": "3Blue1Brown", "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab", "format": "Video", "level": "Beginner", "time": "≈ 3 hrs", "why": "Gives you the geometric intuition for vectors and matrices that every later topic leans on."},
-        {"id": "3b1b-calculus", "title": "Essence of calculus", "by": "3Blue1Brown", "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr", "format": "Video", "level": "Beginner", "time": "≈ 3 hrs", "why": "Derivatives and the chain rule, which is all backpropagation is."},
-        {"id": "google-mlcc", "title": "Machine Learning Crash Course", "by": "Google", "url": "https://developers.google.com/machine-learning/crash-course", "format": "Course", "level": "Beginner", "time": "≈ 15 hrs", "why": "A well-paced introduction with interactive exercises, covering regression through to neural nets and LLMs."},
-        {"id": "kaggle-intro-ml", "title": "Intro to Machine Learning", "by": "Kaggle Learn", "url": "https://www.kaggle.com/learn/intro-to-machine-learning", "format": "Hands-on", "level": "Beginner", "time": "≈ 3 hrs", "why": "You build and validate a real model within the first hour."},
-        {"id": "statquest", "title": "StatQuest video index", "by": "Josh Starmer", "url": "https://statquest.org/video-index/", "format": "Video", "level": "Beginner", "time": "Reference", "why": "Patient, step-by-step explanations of nearly every statistics and ML concept. Look things up here when stuck."},
-        {"id": "cs50-ai", "title": "CS50's Introduction to Artificial Intelligence with Python", "by": "Harvard", "url": "https://cs50.harvard.edu/ai/", "format": "Course", "level": "Intermediate", "time": "≈ 7 weeks", "why": "Search, logic, probability, optimisation and learning, each with a substantial programming project."},
-        {"id": "cs229", "title": "CS229: Machine Learning (lectures)", "by": "Andrew Ng, Stanford", "url": "https://www.youtube.com/playlist?list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU", "format": "Video", "level": "Advanced", "time": "≈ 25 hrs", "why": "The full mathematical treatment of classical ML, for when you want the derivations."},
-        {"id": "mml-book", "title": "Mathematics for Machine Learning", "by": "Deisenroth, Faisal & Ong", "url": "https://mml-book.github.io/", "format": "Book", "level": "Advanced", "time": "Reference", "why": "The standard free textbook for the maths. Use it to fill specific gaps, not to read cover to cover."}
+        {
+          "id": "kaggle-python",
+          "title": "Python",
+          "by": "Kaggle Learn",
+          "url": "https://www.kaggle.com/learn/python",
+          "format": "Hands-on",
+          "level": "Beginner",
+          "time": "≈ 5 hrs",
+          "why": "The fastest route to enough Python for ML, in the browser with nothing to install."
+        },
+        {
+          "id": "3b1b-linear-algebra",
+          "title": "Essence of linear algebra",
+          "by": "3Blue1Brown",
+          "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "≈ 3 hrs",
+          "why": "Gives you the geometric intuition for vectors and matrices that every later topic leans on."
+        },
+        {
+          "id": "3b1b-calculus",
+          "title": "Essence of calculus",
+          "by": "3Blue1Brown",
+          "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "≈ 3 hrs",
+          "why": "Derivatives and the chain rule, which is all backpropagation is."
+        },
+        {
+          "id": "google-mlcc",
+          "title": "Machine Learning Crash Course",
+          "by": "Google",
+          "url": "https://developers.google.com/machine-learning/crash-course",
+          "format": "Course",
+          "level": "Beginner",
+          "time": "≈ 15 hrs",
+          "why": "A well-paced introduction with interactive exercises, covering regression through to neural nets and LLMs."
+        },
+        {
+          "id": "kaggle-intro-ml",
+          "title": "Intro to Machine Learning",
+          "by": "Kaggle Learn",
+          "url": "https://www.kaggle.com/learn/intro-to-machine-learning",
+          "format": "Hands-on",
+          "level": "Beginner",
+          "time": "≈ 3 hrs",
+          "why": "You build and validate a real model within the first hour."
+        },
+        {
+          "id": "statquest",
+          "title": "StatQuest video index",
+          "by": "Josh Starmer",
+          "url": "https://statquest.org/video-index/",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "Reference",
+          "why": "Patient, step-by-step explanations of nearly every statistics and ML concept. Look things up here when stuck."
+        },
+        {
+          "id": "cs50-ai",
+          "title": "CS50's Introduction to Artificial Intelligence with Python",
+          "by": "Harvard",
+          "url": "https://cs50.harvard.edu/ai/",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 7 weeks",
+          "why": "Search, logic, probability, optimisation and learning, each with a substantial programming project."
+        },
+        {
+          "id": "cs229",
+          "title": "CS229: Machine Learning (lectures)",
+          "by": "Andrew Ng, Stanford",
+          "url": "https://www.youtube.com/playlist?list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU",
+          "format": "Video",
+          "level": "Advanced",
+          "time": "≈ 25 hrs",
+          "why": "The full mathematical treatment of classical ML, for when you want the derivations."
+        },
+        {
+          "id": "mml-book",
+          "title": "Mathematics for Machine Learning",
+          "by": "Deisenroth, Faisal & Ong",
+          "url": "https://mml-book.github.io/",
+          "format": "Book",
+          "level": "Advanced",
+          "time": "Reference",
+          "why": "The standard free textbook for the maths. Use it to fill specific gaps, not to read cover to cover."
+        }
       ]
     },
     {
@@ -69,15 +294,96 @@
       "blurb": "Neural networks, backpropagation and training loops. By the end you will have written a network by hand and trained real ones in PyTorch.",
       "outcome": "You can build, train and debug a neural network in PyTorch and read a loss curve.",
       "items": [
-        {"id": "3b1b-nn-series", "title": "Neural networks (full series)", "by": "3Blue1Brown", "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi", "format": "Video", "level": "Beginner", "time": "≈ 3 hrs", "why": "Gradient descent and backpropagation made visual. Watch before writing any code."},
-        {"id": "tf-playground", "title": "Neural Network Playground", "by": "TensorFlow", "url": "https://playground.tensorflow.org/", "format": "Interactive", "level": "Beginner", "time": "30 min", "why": "Train a tiny network in your browser and watch what layers, neurons and learning rate actually do."},
-        {"id": "karpathy-micrograd", "title": "The spelled-out intro to neural networks and backpropagation", "by": "Andrej Karpathy", "url": "https://www.youtube.com/watch?v=VMj-3S1tku0", "format": "Video", "level": "Intermediate", "time": "2.5 hrs", "why": "You build an autograd engine from nothing. Backpropagation stops being magic after this."},
-        {"id": "fastai", "title": "Practical Deep Learning for Coders", "by": "fast.ai", "url": "https://course.fast.ai/", "format": "Course", "level": "Intermediate", "time": "≈ 9 weeks", "why": "Top-down and practical: you train a state-of-the-art model in lesson one and learn the theory as you go."},
-        {"id": "zero-to-hero", "title": "Neural Networks: Zero to Hero", "by": "Andrej Karpathy", "url": "https://karpathy.ai/zero-to-hero.html", "format": "Video", "level": "Intermediate", "time": "≈ 20 hrs", "why": "The bottom-up counterpart to fast.ai. Everything is coded live from first principles, ending in a GPT."},
-        {"id": "pytorch-basics", "title": "Learn the Basics", "by": "PyTorch", "url": "https://pytorch.org/tutorials/beginner/basics/intro.html", "format": "Hands-on", "level": "Intermediate", "time": "≈ 4 hrs", "why": "The official tour of tensors, datasets, models and the training loop."},
-        {"id": "mit-6s191", "title": "6.S191: Introduction to Deep Learning", "by": "MIT", "url": "https://introtodeeplearning.com/", "format": "Course", "level": "Intermediate", "time": "≈ 15 hrs", "why": "A fast, up-to-date lecture series with labs, refreshed every year."},
-        {"id": "cs231n", "title": "CS231n: Deep Learning for Computer Vision", "by": "Stanford", "url": "https://cs231n.stanford.edu/", "format": "Course", "level": "Advanced", "time": "≈ 10 weeks", "why": "The classic rigorous course. Its notes and assignments are still some of the best written on the fundamentals."},
-        {"id": "d2l", "title": "Dive into Deep Learning", "by": "Zhang, Lipton, Li & Smola", "url": "https://d2l.ai/", "format": "Book", "level": "Advanced", "time": "Reference", "why": "A free interactive textbook with runnable code for every concept."}
+        {
+          "id": "3b1b-nn-series",
+          "title": "Neural networks (full series)",
+          "by": "3Blue1Brown",
+          "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "≈ 3 hrs",
+          "why": "Gradient descent and backpropagation made visual. Watch before writing any code."
+        },
+        {
+          "id": "tf-playground",
+          "title": "Neural Network Playground",
+          "by": "TensorFlow",
+          "url": "https://playground.tensorflow.org/",
+          "format": "Interactive",
+          "level": "Beginner",
+          "time": "30 min",
+          "why": "Train a tiny network in your browser and watch what layers, neurons and learning rate actually do."
+        },
+        {
+          "id": "karpathy-micrograd",
+          "title": "The spelled-out intro to neural networks and backpropagation",
+          "by": "Andrej Karpathy",
+          "url": "https://www.youtube.com/watch?v=VMj-3S1tku0",
+          "format": "Video",
+          "level": "Intermediate",
+          "time": "2.5 hrs",
+          "why": "You build an autograd engine from nothing. Backpropagation stops being magic after this."
+        },
+        {
+          "id": "fastai",
+          "title": "Practical Deep Learning for Coders",
+          "by": "fast.ai",
+          "url": "https://course.fast.ai/",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 9 weeks",
+          "why": "Top-down and practical: you train a state-of-the-art model in lesson one and learn the theory as you go."
+        },
+        {
+          "id": "zero-to-hero",
+          "title": "Neural Networks: Zero to Hero",
+          "by": "Andrej Karpathy",
+          "url": "https://karpathy.ai/zero-to-hero.html",
+          "format": "Video",
+          "level": "Intermediate",
+          "time": "≈ 20 hrs",
+          "why": "The bottom-up counterpart to fast.ai. Everything is coded live from first principles, ending in a GPT."
+        },
+        {
+          "id": "pytorch-basics",
+          "title": "Learn the Basics",
+          "by": "PyTorch",
+          "url": "https://pytorch.org/tutorials/beginner/basics/intro.html",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 4 hrs",
+          "why": "The official tour of tensors, datasets, models and the training loop."
+        },
+        {
+          "id": "mit-6s191",
+          "title": "6.S191: Introduction to Deep Learning",
+          "by": "MIT",
+          "url": "https://introtodeeplearning.com/",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 15 hrs",
+          "why": "A fast, up-to-date lecture series with labs, refreshed every year."
+        },
+        {
+          "id": "cs231n",
+          "title": "CS231n: Deep Learning for Computer Vision",
+          "by": "Stanford",
+          "url": "https://cs231n.stanford.edu/",
+          "format": "Course",
+          "level": "Advanced",
+          "time": "≈ 10 weeks",
+          "why": "The classic rigorous course. Its notes and assignments are still some of the best written on the fundamentals."
+        },
+        {
+          "id": "d2l",
+          "title": "Dive into Deep Learning",
+          "by": "Zhang, Lipton, Li & Smola",
+          "url": "https://d2l.ai/",
+          "format": "Book",
+          "level": "Advanced",
+          "time": "Reference",
+          "why": "A free interactive textbook with runnable code for every concept."
+        }
       ]
     },
     {
@@ -86,19 +392,136 @@
       "blurb": "Tokens, embeddings, attention and the transformer. You go from pictures, to an interactive model you can poke, to writing a GPT yourself.",
       "outcome": "You can explain the transformer block by block and have built and trained a small GPT.",
       "items": [
-        {"id": "3b1b-transformers", "title": "Transformers, the tech behind LLMs", "by": "3Blue1Brown", "url": "https://www.youtube.com/watch?v=wjZofJX0v4M", "format": "Video", "level": "Beginner", "time": "27 min", "why": "The clearest visual walk through what happens to your text inside a transformer."},
-        {"id": "3b1b-attention", "title": "Attention in transformers, step-by-step", "by": "3Blue1Brown", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "format": "Video", "level": "Beginner", "time": "26 min", "why": "Attention is the key idea. This is the explanation that makes it click."},
-        {"id": "transformer-explainer", "title": "Transformer Explainer", "by": "Georgia Tech Polo Club", "url": "https://poloclub.github.io/transformer-explainer/", "format": "Interactive", "level": "Beginner", "time": "30 min", "why": "A live GPT-2 in your browser. Type text and watch every step of the computation."},
-        {"id": "llm-viz", "title": "LLM Visualization", "by": "Brendan Bycroft", "url": "https://bbycroft.net/llm", "format": "Interactive", "level": "Beginner", "time": "30 min", "why": "A 3D walkthrough of a small GPT, showing every matrix as it runs."},
-        {"id": "illustrated-transformer", "title": "The Illustrated Transformer", "by": "Jay Alammar", "url": "https://jalammar.github.io/illustrated-transformer/", "format": "Reading", "level": "Intermediate", "time": "45 min", "why": "The article that taught a generation of engineers the architecture."},
-        {"id": "karpathy-deep-dive", "title": "Deep Dive into LLMs like ChatGPT", "by": "Andrej Karpathy", "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI", "format": "Video", "level": "Intermediate", "time": "3.5 hrs", "why": "The whole pipeline end to end: data, tokenisation, pre-training, fine-tuning, reinforcement learning and why models hallucinate."},
-        {"id": "karpathy-build-gpt", "title": "Let's build GPT: from scratch, in code, spelled out", "by": "Andrej Karpathy", "url": "https://www.youtube.com/watch?v=kCc8FmEb1nY", "format": "Video", "level": "Intermediate", "time": "2 hrs", "why": "You write a working transformer line by line. The single most valuable two hours in this programme."},
-        {"id": "karpathy-tokenizer", "title": "Let's build the GPT Tokenizer", "by": "Andrej Karpathy", "url": "https://www.youtube.com/watch?v=zduSFxRajkE", "format": "Video", "level": "Intermediate", "time": "2 hrs", "why": "Tokenisation explains many odd model behaviours. Here you build one."},
-        {"id": "raschka-llms", "title": "Build a Large Language Model (From Scratch): code and videos", "by": "Sebastian Raschka", "url": "https://github.com/rasbt/LLMs-from-scratch", "format": "Hands-on", "level": "Intermediate", "time": "≈ 40 hrs", "why": "The full code for the book, free, with notebooks for every chapter from attention to fine-tuning."},
-        {"id": "annotated-transformer", "title": "The Annotated Transformer", "by": "Harvard NLP", "url": "https://nlp.seas.harvard.edu/annotated-transformer/", "format": "Reading", "level": "Advanced", "time": "3 hrs", "why": "The original paper, implemented line by line next to the text."},
-        {"id": "attention-paper", "title": "Attention Is All You Need", "by": "Vaswani et al.", "url": "https://arxiv.org/abs/1706.03762", "format": "Reading", "level": "Advanced", "time": "2 hrs", "why": "The paper that introduced the transformer. Readable once you have done the items above."},
-        {"id": "cs224n", "title": "CS224N: Natural Language Processing with Deep Learning", "by": "Stanford", "url": "https://web.stanford.edu/class/cs224n/", "format": "Course", "level": "Advanced", "time": "≈ 10 weeks", "why": "The academic backbone of the field, with lecture videos, notes and assignments online."},
-        {"id": "cs336", "title": "CS336: Language Modeling from Scratch", "by": "Stanford", "url": "https://stanford-cs336.github.io/spring2025/", "format": "Course", "level": "Advanced", "time": "≈ 10 weeks", "why": "The deepest free course on building an LLM: tokeniser, architecture, GPU training, data and scaling. Demanding."}
+        {
+          "id": "3b1b-transformers",
+          "title": "Transformers, the tech behind LLMs",
+          "by": "3Blue1Brown",
+          "url": "https://www.youtube.com/watch?v=wjZofJX0v4M",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "27 min",
+          "why": "The clearest visual walk through what happens to your text inside a transformer."
+        },
+        {
+          "id": "3b1b-attention",
+          "title": "Attention in transformers, step-by-step",
+          "by": "3Blue1Brown",
+          "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "26 min",
+          "why": "Attention is the key idea. This is the explanation that makes it click."
+        },
+        {
+          "id": "transformer-explainer",
+          "title": "Transformer Explainer",
+          "by": "Georgia Tech Polo Club",
+          "url": "https://poloclub.github.io/transformer-explainer/",
+          "format": "Interactive",
+          "level": "Beginner",
+          "time": "30 min",
+          "why": "A live GPT-2 in your browser. Type text and watch every step of the computation."
+        },
+        {
+          "id": "llm-viz",
+          "title": "LLM Visualization",
+          "by": "Brendan Bycroft",
+          "url": "https://bbycroft.net/llm",
+          "format": "Interactive",
+          "level": "Beginner",
+          "time": "30 min",
+          "why": "A 3D walkthrough of a small GPT, showing every matrix as it runs."
+        },
+        {
+          "id": "illustrated-transformer",
+          "title": "The Illustrated Transformer",
+          "by": "Jay Alammar",
+          "url": "https://jalammar.github.io/illustrated-transformer/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "45 min",
+          "why": "The article that taught a generation of engineers the architecture."
+        },
+        {
+          "id": "karpathy-deep-dive",
+          "title": "Deep Dive into LLMs like ChatGPT",
+          "by": "Andrej Karpathy",
+          "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI",
+          "format": "Video",
+          "level": "Intermediate",
+          "time": "3.5 hrs",
+          "why": "The whole pipeline end to end: data, tokenisation, pre-training, fine-tuning, reinforcement learning and why models hallucinate."
+        },
+        {
+          "id": "karpathy-build-gpt",
+          "title": "Let's build GPT: from scratch, in code, spelled out",
+          "by": "Andrej Karpathy",
+          "url": "https://www.youtube.com/watch?v=kCc8FmEb1nY",
+          "format": "Video",
+          "level": "Intermediate",
+          "time": "2 hrs",
+          "why": "You write a working transformer line by line. The single most valuable two hours in this programme."
+        },
+        {
+          "id": "karpathy-tokenizer",
+          "title": "Let's build the GPT Tokenizer",
+          "by": "Andrej Karpathy",
+          "url": "https://www.youtube.com/watch?v=zduSFxRajkE",
+          "format": "Video",
+          "level": "Intermediate",
+          "time": "2 hrs",
+          "why": "Tokenisation explains many odd model behaviours. Here you build one."
+        },
+        {
+          "id": "raschka-llms",
+          "title": "Build a Large Language Model (From Scratch): code and videos",
+          "by": "Sebastian Raschka",
+          "url": "https://github.com/rasbt/LLMs-from-scratch",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 40 hrs",
+          "why": "The full code for the book, free, with notebooks for every chapter from attention to fine-tuning."
+        },
+        {
+          "id": "annotated-transformer",
+          "title": "The Annotated Transformer",
+          "by": "Harvard NLP",
+          "url": "https://nlp.seas.harvard.edu/annotated-transformer/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "3 hrs",
+          "why": "The original paper, implemented line by line next to the text."
+        },
+        {
+          "id": "attention-paper",
+          "title": "Attention Is All You Need",
+          "by": "Vaswani et al.",
+          "url": "https://arxiv.org/abs/1706.03762",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "2 hrs",
+          "why": "The paper that introduced the transformer. Readable once you have done the items above."
+        },
+        {
+          "id": "cs224n",
+          "title": "CS224N: Natural Language Processing with Deep Learning",
+          "by": "Stanford",
+          "url": "https://web.stanford.edu/class/cs224n/",
+          "format": "Course",
+          "level": "Advanced",
+          "time": "≈ 10 weeks",
+          "why": "The academic backbone of the field, with lecture videos, notes and assignments online."
+        },
+        {
+          "id": "cs336",
+          "title": "CS336: Language Modeling from Scratch",
+          "by": "Stanford",
+          "url": "https://stanford-cs336.github.io/spring2025/",
+          "format": "Course",
+          "level": "Advanced",
+          "time": "≈ 10 weeks",
+          "why": "The deepest free course on building an LLM: tokeniser, architecture, GPU training, data and scaling. Demanding."
+        }
       ]
     },
     {
@@ -107,14 +530,86 @@
       "blurb": "Using open models, adapting them to your own data, and knowing when fine-tuning beats a better prompt (often it doesn't).",
       "outcome": "You can fine-tune an open model on your own dataset, evaluate it and run it.",
       "items": [
-        {"id": "hf-llm-course", "title": "LLM Course", "by": "Hugging Face", "url": "https://huggingface.co/learn/llm-course", "format": "Course", "level": "Intermediate", "time": "≈ 30 hrs", "why": "The practical handbook for the open-model ecosystem: loading, tokenising, fine-tuning, evaluating and sharing models."},
-        {"id": "dlai-finetuning", "title": "Finetuning Large Language Models", "by": "DeepLearning.AI & Lamini", "url": "https://www.deeplearning.ai/short-courses/finetuning-large-language-models/", "format": "Course", "level": "Intermediate", "time": "1 hr", "why": "A short orientation on when to fine-tune, how to prepare data and how to evaluate the result."},
-        {"id": "unsloth", "title": "Fine-tuning guide and notebooks", "by": "Unsloth", "url": "https://docs.unsloth.ai/", "format": "Hands-on", "level": "Intermediate", "time": "≈ 3 hrs", "why": "Ready-to-run notebooks that fine-tune current open models on a free GPU. The quickest way to do it for real."},
-        {"id": "hf-smol-course", "title": "smol course", "by": "Hugging Face", "url": "https://github.com/huggingface/smol-course", "format": "Hands-on", "level": "Intermediate", "time": "≈ 15 hrs", "why": "A hands-on course on post-training small models: instruction tuning, LoRA, evaluation and synthetic data."},
-        {"id": "hf-peft", "title": "PEFT: parameter-efficient fine-tuning", "by": "Hugging Face docs", "url": "https://huggingface.co/docs/peft", "format": "Reading", "level": "Intermediate", "time": "Reference", "why": "The library and concepts behind LoRA and friends, which make fine-tuning affordable."},
-        {"id": "mlabonne-llm-course", "title": "LLM Course", "by": "Maxime Labonne", "url": "https://github.com/mlabonne/llm-course", "format": "Reading", "level": "Intermediate", "time": "Roadmap", "why": "A curated roadmap with notebooks, split into fundamentals, the LLM scientist and the LLM engineer."},
-        {"id": "karpathy-gpt2", "title": "Let's reproduce GPT-2 (124M)", "by": "Andrej Karpathy", "url": "https://www.youtube.com/watch?v=l8pRSuU81PU", "format": "Video", "level": "Advanced", "time": "4 hrs", "why": "A real training run from an empty file: optimisation, mixed precision, distributed training and evaluation."},
-        {"id": "nanochat", "title": "nanochat", "by": "Andrej Karpathy", "url": "https://github.com/karpathy/nanochat", "format": "Hands-on", "level": "Advanced", "time": "Project", "why": "A complete, readable ChatGPT-style pipeline you can train yourself on rented GPUs: tokeniser, pre-training, fine-tuning and a web UI."}
+        {
+          "id": "hf-llm-course",
+          "title": "LLM Course",
+          "by": "Hugging Face",
+          "url": "https://huggingface.co/learn/llm-course",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 30 hrs",
+          "why": "The practical handbook for the open-model ecosystem: loading, tokenising, fine-tuning, evaluating and sharing models."
+        },
+        {
+          "id": "dlai-finetuning",
+          "title": "Finetuning Large Language Models",
+          "by": "DeepLearning.AI & Lamini",
+          "url": "https://www.deeplearning.ai/short-courses/finetuning-large-language-models/",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "1 hr",
+          "why": "A short orientation on when to fine-tune, how to prepare data and how to evaluate the result."
+        },
+        {
+          "id": "unsloth",
+          "title": "Fine-tuning guide and notebooks",
+          "by": "Unsloth",
+          "url": "https://docs.unsloth.ai/",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 3 hrs",
+          "why": "Ready-to-run notebooks that fine-tune current open models on a free GPU. The quickest way to do it for real."
+        },
+        {
+          "id": "hf-smol-course",
+          "title": "smol course",
+          "by": "Hugging Face",
+          "url": "https://github.com/huggingface/smol-course",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 15 hrs",
+          "why": "A hands-on course on post-training small models: instruction tuning, LoRA, evaluation and synthetic data."
+        },
+        {
+          "id": "hf-peft",
+          "title": "PEFT: parameter-efficient fine-tuning",
+          "by": "Hugging Face docs",
+          "url": "https://huggingface.co/docs/peft",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "Reference",
+          "why": "The library and concepts behind LoRA and friends, which make fine-tuning affordable."
+        },
+        {
+          "id": "mlabonne-llm-course",
+          "title": "LLM Course",
+          "by": "Maxime Labonne",
+          "url": "https://github.com/mlabonne/llm-course",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "Roadmap",
+          "why": "A curated roadmap with notebooks, split into fundamentals, the LLM scientist and the LLM engineer."
+        },
+        {
+          "id": "karpathy-gpt2",
+          "title": "Let's reproduce GPT-2 (124M)",
+          "by": "Andrej Karpathy",
+          "url": "https://www.youtube.com/watch?v=l8pRSuU81PU",
+          "format": "Video",
+          "level": "Advanced",
+          "time": "4 hrs",
+          "why": "A real training run from an empty file: optimisation, mixed precision, distributed training and evaluation."
+        },
+        {
+          "id": "nanochat",
+          "title": "nanochat",
+          "by": "Andrej Karpathy",
+          "url": "https://github.com/karpathy/nanochat",
+          "format": "Hands-on",
+          "level": "Advanced",
+          "time": "Project",
+          "why": "A complete, readable ChatGPT-style pipeline you can train yourself on rented GPUs: tokeniser, pre-training, fine-tuning and a web UI."
+        }
       ]
     },
     {
@@ -123,16 +618,106 @@
       "blurb": "Most useful AI products are a model plus your data plus careful checking. This stage covers calling models from code, retrieval (RAG), and the unglamorous work of measuring whether it is any good.",
       "outcome": "You can ship a small app that answers questions over your own documents, and prove it works with an eval.",
       "items": [
-        {"id": "anthropic-courses", "title": "Anthropic courses: API fundamentals, tool use and more", "by": "Anthropic", "url": "https://github.com/anthropics/courses", "format": "Hands-on", "level": "Intermediate", "time": "≈ 10 hrs", "why": "Notebook courses that take you from a first API call through real-world prompting, evaluations and tool use."},
-        {"id": "openai-cookbook", "title": "OpenAI Cookbook", "by": "OpenAI", "url": "https://cookbook.openai.com/", "format": "Hands-on", "level": "Intermediate", "time": "Reference", "why": "Hundreds of worked examples for common tasks. Search it before building anything from scratch."},
-        {"id": "anthropic-cookbook", "title": "Claude Cookbooks", "by": "Anthropic", "url": "https://github.com/anthropics/anthropic-cookbook", "format": "Hands-on", "level": "Intermediate", "time": "Reference", "why": "Copy-and-adapt recipes for retrieval, tool use, structured output, vision and agents."},
-        {"id": "ms-genai-beginners", "title": "Generative AI for Beginners", "by": "Microsoft", "url": "https://github.com/microsoft/generative-ai-for-beginners", "format": "Course", "level": "Beginner", "time": "≈ 20 hrs", "why": "A lesson-by-lesson course on building generative AI apps, with code in Python and TypeScript."},
-        {"id": "rag-from-scratch", "title": "RAG From Scratch", "by": "LangChain", "url": "https://github.com/langchain-ai/rag-from-scratch", "format": "Hands-on", "level": "Intermediate", "time": "≈ 4 hrs", "why": "Short videos and notebooks that build retrieval up one idea at a time: indexing, query rewriting, routing and re-ranking."},
-        {"id": "cohere-llmu", "title": "LLM University", "by": "Cohere", "url": "https://cohere.com/llmu", "format": "Course", "level": "Intermediate", "time": "≈ 10 hrs", "why": "Particularly strong on embeddings, semantic search and retrieval."},
-        {"id": "hamel-evals", "title": "Your AI Product Needs Evals", "by": "Hamel Husain", "url": "https://hamel.dev/blog/posts/evals/", "format": "Reading", "level": "Intermediate", "time": "30 min", "why": "The essay that made evaluation the centre of applied AI work. Read before you ship anything."},
-        {"id": "applied-llms", "title": "What We Learned from a Year of Building with LLMs", "by": "Yan, Bischof, Frye, Husain, Liu & Shankar", "url": "https://applied-llms.org/", "format": "Reading", "level": "Intermediate", "time": "1.5 hrs", "why": "Hard-won practical lessons from six practitioners, covering tactics, operations and strategy."},
-        {"id": "eugene-patterns", "title": "Patterns for Building LLM-based Systems & Products", "by": "Eugene Yan", "url": "https://eugeneyan.com/writing/llm-patterns/", "format": "Reading", "level": "Intermediate", "time": "1 hr", "why": "Seven recurring patterns (evals, RAG, fine-tuning, caching, guardrails and more) and when each applies."},
-        {"id": "fsdl-llm", "title": "LLM Bootcamp", "by": "Full Stack Deep Learning", "url": "https://fullstackdeeplearning.com/llm-bootcamp/", "format": "Video", "level": "Intermediate", "time": "≈ 10 hrs", "why": "Lectures on the full lifecycle of an LLM product. From 2023, so tool names have dated, but the thinking has not."}
+        {
+          "id": "anthropic-courses",
+          "title": "Anthropic courses: API fundamentals, tool use and more",
+          "by": "Anthropic",
+          "url": "https://github.com/anthropics/courses",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 10 hrs",
+          "why": "Notebook courses that take you from a first API call through real-world prompting, evaluations and tool use."
+        },
+        {
+          "id": "openai-cookbook",
+          "title": "OpenAI Cookbook",
+          "by": "OpenAI",
+          "url": "https://cookbook.openai.com/",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "Reference",
+          "why": "Hundreds of worked examples for common tasks. Search it before building anything from scratch."
+        },
+        {
+          "id": "anthropic-cookbook",
+          "title": "Claude Cookbooks",
+          "by": "Anthropic",
+          "url": "https://github.com/anthropics/anthropic-cookbook",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "Reference",
+          "why": "Copy-and-adapt recipes for retrieval, tool use, structured output, vision and agents."
+        },
+        {
+          "id": "ms-genai-beginners",
+          "title": "Generative AI for Beginners",
+          "by": "Microsoft",
+          "url": "https://github.com/microsoft/generative-ai-for-beginners",
+          "format": "Course",
+          "level": "Beginner",
+          "time": "≈ 20 hrs",
+          "why": "A lesson-by-lesson course on building generative AI apps, with code in Python and TypeScript."
+        },
+        {
+          "id": "rag-from-scratch",
+          "title": "RAG From Scratch",
+          "by": "LangChain",
+          "url": "https://github.com/langchain-ai/rag-from-scratch",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 4 hrs",
+          "why": "Short videos and notebooks that build retrieval up one idea at a time: indexing, query rewriting, routing and re-ranking."
+        },
+        {
+          "id": "cohere-llmu",
+          "title": "LLM University",
+          "by": "Cohere",
+          "url": "https://cohere.com/llmu",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 10 hrs",
+          "why": "Particularly strong on embeddings, semantic search and retrieval."
+        },
+        {
+          "id": "hamel-evals",
+          "title": "Your AI Product Needs Evals",
+          "by": "Hamel Husain",
+          "url": "https://hamel.dev/blog/posts/evals/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "30 min",
+          "why": "The essay that made evaluation the centre of applied AI work. Read before you ship anything."
+        },
+        {
+          "id": "applied-llms",
+          "title": "What We Learned from a Year of Building with LLMs",
+          "by": "Yan, Bischof, Frye, Husain, Liu & Shankar",
+          "url": "https://applied-llms.org/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "1.5 hrs",
+          "why": "Hard-won practical lessons from six practitioners, covering tactics, operations and strategy."
+        },
+        {
+          "id": "eugene-patterns",
+          "title": "Patterns for Building LLM-based Systems & Products",
+          "by": "Eugene Yan",
+          "url": "https://eugeneyan.com/writing/llm-patterns/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "1 hr",
+          "why": "Seven recurring patterns (evals, RAG, fine-tuning, caching, guardrails and more) and when each applies."
+        },
+        {
+          "id": "fsdl-llm",
+          "title": "LLM Bootcamp",
+          "by": "Full Stack Deep Learning",
+          "url": "https://fullstackdeeplearning.com/llm-bootcamp/",
+          "format": "Video",
+          "level": "Intermediate",
+          "time": "≈ 10 hrs",
+          "why": "Lectures on the full lifecycle of an LLM product. From 2023, so tool names have dated, but the thinking has not."
+        }
       ]
     },
     {
@@ -141,20 +726,146 @@
       "blurb": "Models that use tools, take multiple steps and act on your behalf. This is the fastest-moving stage, so it mixes durable principles with current tools: MCP, coding agents and agent frameworks.",
       "outcome": "You can design, build and supervise an agent that completes a real multi-step task, and you know when a simple workflow is the better choice.",
       "items": [
-        {"id": "building-effective-agents", "title": "Building effective agents", "by": "Anthropic", "url": "https://www.anthropic.com/engineering/building-effective-agents", "format": "Reading", "level": "Beginner", "time": "30 min", "why": "The essential starting point: the difference between workflows and agents, the common patterns, and why to keep it simple."},
-        {"id": "claude-code-in-action", "title": "Claude Code in Action", "by": "Anthropic Academy", "url": "https://anthropic.skilljar.com/claude-code-in-action", "format": "Course", "level": "Beginner", "time": "≈ 1 hr", "why": "A free hands-on course on working with a coding agent. The quickest way to feel what agentic work is like."},
-        {"id": "claude-code-best-practices", "title": "Claude Code: best practices for agentic coding", "by": "Anthropic", "url": "https://www.anthropic.com/engineering/claude-code-best-practices", "format": "Reading", "level": "Beginner", "time": "30 min", "why": "Habits that carry over to any coding agent: give context, plan first, verify, and run work in parallel."},
-        {"id": "hf-agents-course", "title": "AI Agents Course", "by": "Hugging Face", "url": "https://huggingface.co/learn/agents-course", "format": "Course", "level": "Intermediate", "time": "≈ 25 hrs", "why": "Widely recommended as the best free structured course: agent fundamentals, tool calling, several frameworks and a final build."},
-        {"id": "ms-agents-beginners", "title": "AI Agents for Beginners", "by": "Microsoft", "url": "https://github.com/microsoft/ai-agents-for-beginners", "format": "Course", "level": "Beginner", "time": "≈ 15 hrs", "why": "Lessons with runnable code on design patterns, tool use, planning, multi-agent systems and taking agents to production."},
-        {"id": "mcp-docs", "title": "Model Context Protocol: introduction", "by": "modelcontextprotocol.io", "url": "https://modelcontextprotocol.io/", "format": "Reading", "level": "Intermediate", "time": "1 hr", "why": "MCP is the standard way to connect agents to tools and data. The official docs include build-a-server tutorials."},
-        {"id": "hf-mcp-course", "title": "MCP Course", "by": "Hugging Face", "url": "https://huggingface.co/learn/mcp-course", "format": "Course", "level": "Intermediate", "time": "≈ 10 hrs", "why": "A hands-on course that has you building and deploying MCP servers and clients."},
-        {"id": "kaggle-agents", "title": "5-Day AI Agents Intensive", "by": "Google & Kaggle", "url": "https://www.kaggle.com/learn-guide/5-day-agents", "format": "Course", "level": "Intermediate", "time": "≈ 5 days", "why": "A self-paced guide pairing a whitepaper with hands-on labs each day, from first agent to evaluation and deployment."},
-        {"id": "langgraph-intro", "title": "Introduction to LangGraph", "by": "LangChain Academy", "url": "https://academy.langchain.com/courses/intro-to-langgraph", "format": "Course", "level": "Intermediate", "time": "≈ 6 hrs", "why": "A free course on one widely used agent framework: state, memory, human-in-the-loop and deployment."},
-        {"id": "openai-agents-guide", "title": "A practical guide to building agents", "by": "OpenAI", "url": "https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf", "format": "Reading", "level": "Intermediate", "time": "45 min", "why": "OpenAI's view of when to build an agent, how to design tools and guardrails, and single versus multi-agent setups."},
-        {"id": "context-engineering", "title": "Effective context engineering for AI agents", "by": "Anthropic", "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", "format": "Reading", "level": "Intermediate", "time": "30 min", "why": "What goes into the context window decides how well an agent performs. Covers compaction, memory and sub-agents."},
-        {"id": "writing-tools", "title": "Writing effective tools for agents", "by": "Anthropic", "url": "https://www.anthropic.com/engineering/writing-tools-for-agents", "format": "Reading", "level": "Intermediate", "time": "30 min", "why": "Most agent failures are tool-design failures. How to design, describe and evaluate tools."},
-        {"id": "12-factor-agents", "title": "12-Factor Agents", "by": "HumanLayer", "url": "https://github.com/humanlayer/12-factor-agents", "format": "Reading", "level": "Advanced", "time": "1.5 hrs", "why": "Engineering principles for agents that are reliable enough for production, written by people shipping them."},
-        {"id": "weng-agents", "title": "LLM Powered Autonomous Agents", "by": "Lilian Weng", "url": "https://lilianweng.github.io/posts/2023-06-23-agent/", "format": "Reading", "level": "Advanced", "time": "1 hr", "why": "The foundational survey of planning, memory and tool use. Older, but still the clearest map of the ideas."}
+        {
+          "id": "building-effective-agents",
+          "title": "Building effective agents",
+          "by": "Anthropic",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "format": "Reading",
+          "level": "Beginner",
+          "time": "30 min",
+          "why": "The essential starting point: the difference between workflows and agents, the common patterns, and why to keep it simple."
+        },
+        {
+          "id": "claude-code-in-action",
+          "title": "Claude Code in Action",
+          "by": "Anthropic Academy",
+          "url": "https://anthropic.skilljar.com/claude-code-in-action",
+          "format": "Course",
+          "level": "Beginner",
+          "time": "≈ 1 hr",
+          "why": "A free hands-on course on working with a coding agent. The quickest way to feel what agentic work is like."
+        },
+        {
+          "id": "claude-code-best-practices",
+          "title": "Claude Code: best practices for agentic coding",
+          "by": "Anthropic",
+          "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "format": "Reading",
+          "level": "Beginner",
+          "time": "30 min",
+          "why": "Habits that carry over to any coding agent: give context, plan first, verify, and run work in parallel."
+        },
+        {
+          "id": "hf-agents-course",
+          "title": "AI Agents Course",
+          "by": "Hugging Face",
+          "url": "https://huggingface.co/learn/agents-course",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 25 hrs",
+          "why": "Widely recommended as the best free structured course: agent fundamentals, tool calling, several frameworks and a final build."
+        },
+        {
+          "id": "ms-agents-beginners",
+          "title": "AI Agents for Beginners",
+          "by": "Microsoft",
+          "url": "https://github.com/microsoft/ai-agents-for-beginners",
+          "format": "Course",
+          "level": "Beginner",
+          "time": "≈ 15 hrs",
+          "why": "Lessons with runnable code on design patterns, tool use, planning, multi-agent systems and taking agents to production."
+        },
+        {
+          "id": "mcp-docs",
+          "title": "Model Context Protocol: introduction",
+          "by": "modelcontextprotocol.io",
+          "url": "https://modelcontextprotocol.io/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "1 hr",
+          "why": "MCP is the standard way to connect agents to tools and data. The official docs include build-a-server tutorials."
+        },
+        {
+          "id": "hf-mcp-course",
+          "title": "MCP Course",
+          "by": "Hugging Face",
+          "url": "https://huggingface.co/learn/mcp-course",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 10 hrs",
+          "why": "A hands-on course that has you building and deploying MCP servers and clients."
+        },
+        {
+          "id": "kaggle-agents",
+          "title": "5-Day AI Agents Intensive",
+          "by": "Google & Kaggle",
+          "url": "https://www.kaggle.com/learn-guide/5-day-agents",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 5 days",
+          "why": "A self-paced guide pairing a whitepaper with hands-on labs each day, from first agent to evaluation and deployment."
+        },
+        {
+          "id": "langgraph-intro",
+          "title": "Introduction to LangGraph",
+          "by": "LangChain Academy",
+          "url": "https://academy.langchain.com/courses/intro-to-langgraph",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "≈ 6 hrs",
+          "why": "A free course on one widely used agent framework: state, memory, human-in-the-loop and deployment."
+        },
+        {
+          "id": "openai-agents-guide",
+          "title": "A practical guide to building agents",
+          "by": "OpenAI",
+          "url": "https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "45 min",
+          "why": "OpenAI's view of when to build an agent, how to design tools and guardrails, and single versus multi-agent setups."
+        },
+        {
+          "id": "context-engineering",
+          "title": "Effective context engineering for AI agents",
+          "by": "Anthropic",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "30 min",
+          "why": "What goes into the context window decides how well an agent performs. Covers compaction, memory and sub-agents."
+        },
+        {
+          "id": "writing-tools",
+          "title": "Writing effective tools for agents",
+          "by": "Anthropic",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "30 min",
+          "why": "Most agent failures are tool-design failures. How to design, describe and evaluate tools."
+        },
+        {
+          "id": "12-factor-agents",
+          "title": "12-Factor Agents",
+          "by": "HumanLayer",
+          "url": "https://github.com/humanlayer/12-factor-agents",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "1.5 hrs",
+          "why": "Engineering principles for agents that are reliable enough for production, written by people shipping them."
+        },
+        {
+          "id": "weng-agents",
+          "title": "LLM Powered Autonomous Agents",
+          "by": "Lilian Weng",
+          "url": "https://lilianweng.github.io/posts/2023-06-23-agent/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "1 hr",
+          "why": "The foundational survey of planning, memory and tool use. Older, but still the clearest map of the ideas."
+        }
       ]
     },
     {
@@ -163,15 +874,374 @@
       "blurb": "For when you want to read papers, understand what happens inside models, or work on making them safe. Pick what interests you; nobody does all of it.",
       "outcome": "You can read a current paper, reproduce a result, and find your way into a research area.",
       "items": [
-        {"id": "yannic", "title": "Paper explanations", "by": "Yannic Kilcher", "url": "https://www.youtube.com/@YannicKilcher", "format": "Video", "level": "Advanced", "time": "Ongoing", "why": "Careful walk-throughs of important papers. A good way to learn how to read them yourself."},
-        {"id": "cs25", "title": "CS25: Transformers United", "by": "Stanford", "url": "https://web.stanford.edu/class/cs25/", "format": "Video", "level": "Advanced", "time": "Ongoing", "why": "A seminar series where leading researchers present current work on transformers."},
-        {"id": "arena", "title": "ARENA curriculum", "by": "Alignment Research Engineer Accelerator", "url": "https://www.arena.education/", "format": "Hands-on", "level": "Advanced", "time": "≈ 5 weeks", "why": "A rigorous free programme of exercises on transformers, interpretability, reinforcement learning and evaluations."},
-        {"id": "nanda-mech-interp", "title": "Getting started in mechanistic interpretability", "by": "Neel Nanda", "url": "https://www.neelnanda.io/mechanistic-interpretability/getting-started", "format": "Reading", "level": "Advanced", "time": "Roadmap", "why": "A concrete on-ramp into reverse-engineering what networks have learned."},
-        {"id": "transformer-circuits", "title": "Transformer Circuits Thread", "by": "Anthropic interpretability team", "url": "https://transformer-circuits.pub/", "format": "Reading", "level": "Advanced", "time": "Ongoing", "why": "The primary research on how features and circuits form inside language models."},
-        {"id": "bluedot", "title": "AI safety courses", "by": "BlueDot Impact", "url": "https://bluedot.org/", "format": "Course", "level": "Intermediate", "time": "Varies", "why": "Free, well-regarded courses on AI alignment and governance, with open curricula."},
-        {"id": "hf-diffusion", "title": "Diffusion Models Course", "by": "Hugging Face", "url": "https://huggingface.co/learn/diffusion-course", "format": "Course", "level": "Advanced", "time": "≈ 20 hrs", "why": "How image generation works, from the theory to fine-tuning and guiding your own models."},
-        {"id": "spinning-up", "title": "Spinning Up in Deep RL", "by": "OpenAI", "url": "https://spinningup.openai.com/", "format": "Reading", "level": "Advanced", "time": "≈ 20 hrs", "why": "A compact introduction to reinforcement learning with clean reference implementations."},
-        {"id": "hf-deep-rl", "title": "Deep Reinforcement Learning Course", "by": "Hugging Face", "url": "https://huggingface.co/learn/deep-rl-course", "format": "Course", "level": "Advanced", "time": "≈ 40 hrs", "why": "Theory plus practice training agents in games. No longer actively maintained, so some later units may not run."}
+        {
+          "id": "yannic",
+          "title": "Paper explanations",
+          "by": "Yannic Kilcher",
+          "url": "https://www.youtube.com/@YannicKilcher",
+          "format": "Video",
+          "level": "Advanced",
+          "time": "Ongoing",
+          "why": "Careful walk-throughs of important papers. A good way to learn how to read them yourself."
+        },
+        {
+          "id": "cs25",
+          "title": "CS25: Transformers United",
+          "by": "Stanford",
+          "url": "https://web.stanford.edu/class/cs25/",
+          "format": "Video",
+          "level": "Advanced",
+          "time": "Ongoing",
+          "why": "A seminar series where leading researchers present current work on transformers."
+        },
+        {
+          "id": "arena",
+          "title": "ARENA curriculum",
+          "by": "Alignment Research Engineer Accelerator",
+          "url": "https://www.arena.education/",
+          "format": "Hands-on",
+          "level": "Advanced",
+          "time": "≈ 5 weeks",
+          "why": "A rigorous free programme of exercises on transformers, interpretability, reinforcement learning and evaluations."
+        },
+        {
+          "id": "nanda-mech-interp",
+          "title": "Getting started in mechanistic interpretability",
+          "by": "Neel Nanda",
+          "url": "https://www.neelnanda.io/mechanistic-interpretability/getting-started",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "Roadmap",
+          "why": "A concrete on-ramp into reverse-engineering what networks have learned."
+        },
+        {
+          "id": "transformer-circuits",
+          "title": "Transformer Circuits Thread",
+          "by": "Anthropic interpretability team",
+          "url": "https://transformer-circuits.pub/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "Ongoing",
+          "why": "The primary research on how features and circuits form inside language models."
+        },
+        {
+          "id": "bluedot",
+          "title": "AI safety courses",
+          "by": "BlueDot Impact",
+          "url": "https://bluedot.org/",
+          "format": "Course",
+          "level": "Intermediate",
+          "time": "Varies",
+          "why": "Free, well-regarded courses on AI alignment and governance, with open curricula."
+        },
+        {
+          "id": "hf-diffusion",
+          "title": "Diffusion Models Course",
+          "by": "Hugging Face",
+          "url": "https://huggingface.co/learn/diffusion-course",
+          "format": "Course",
+          "level": "Advanced",
+          "time": "≈ 20 hrs",
+          "why": "How image generation works, from the theory to fine-tuning and guiding your own models."
+        },
+        {
+          "id": "spinning-up",
+          "title": "Spinning Up in Deep RL",
+          "by": "OpenAI",
+          "url": "https://spinningup.openai.com/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "≈ 20 hrs",
+          "why": "A compact introduction to reinforcement learning with clean reference implementations."
+        },
+        {
+          "id": "hf-deep-rl",
+          "title": "Deep Reinforcement Learning Course",
+          "by": "Hugging Face",
+          "url": "https://huggingface.co/learn/deep-rl-course",
+          "format": "Course",
+          "level": "Advanced",
+          "time": "≈ 40 hrs",
+          "why": "Theory plus practice training agents in games. No longer actively maintained, so some later units may not run."
+        }
+      ]
+    },
+    {
+      "id": "hardware",
+      "title": "Hardware and infrastructure: GPUs, serving and Kubernetes",
+      "blurb": "What models actually run on. The kinds of AI chip, why memory is usually the limit, how to fit a model on the hardware you have, how one GPU is shared between several models, and how it is all scheduled on Kubernetes.",
+      "outcome": "You can size hardware for a model, serve it efficiently, split a GPU between workloads, and deploy it on a Kubernetes cluster.",
+      "items": [
+        {
+          "id": "how-gpus-work",
+          "title": "How do Graphics Cards Work? Exploring GPU Architecture",
+          "by": "Branch Education",
+          "url": "https://www.youtube.com/watch?v=h9Z4oGN89MU",
+          "format": "Video",
+          "level": "Beginner",
+          "time": "28 min",
+          "why": "A visual tour inside a GPU and why its design suits the arithmetic AI needs."
+        },
+        {
+          "id": "cset-ai-chips",
+          "title": "AI Chips: What They Are and Why They Matter",
+          "by": "Georgetown CSET",
+          "url": "https://cset.georgetown.edu/publication/ai-chips-what-they-are-and-why-they-matter/",
+          "format": "Reading",
+          "level": "Beginner",
+          "time": "1 hr",
+          "why": "A plain-language primer on the chip types (CPU, GPU, FPGA, ASIC) and why specialised chips matter. From 2020, so names have moved on but the concepts hold."
+        },
+        {
+          "id": "dettmers-gpu",
+          "title": "Which GPU(s) to Get for Deep Learning",
+          "by": "Tim Dettmers",
+          "url": "https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/",
+          "format": "Reading",
+          "level": "Beginner",
+          "time": "1 hr",
+          "why": "The classic buyer's guide. Explains what actually matters (memory, tensor cores, cooling, power) better than any spec sheet."
+        },
+        {
+          "id": "fsdl-cloud-gpus",
+          "title": "Cloud GPUs comparison",
+          "by": "Full Stack Deep Learning",
+          "url": "https://fullstackdeeplearning.com/cloud-gpus/",
+          "format": "Reading",
+          "level": "Beginner",
+          "time": "Reference",
+          "why": "A table of GPU types and prices across cloud providers, with advice on choosing between them."
+        },
+        {
+          "id": "google-tpu",
+          "title": "Introduction to Cloud TPU",
+          "by": "Google Cloud docs",
+          "url": "https://cloud.google.com/tpu/docs/intro-to-tpu",
+          "format": "Reading",
+          "level": "Beginner",
+          "time": "20 min",
+          "why": "What a TPU is and when a purpose-built accelerator beats a GPU."
+        },
+        {
+          "id": "ollama",
+          "title": "Ollama: run models on your own machine",
+          "by": "Ollama",
+          "url": "https://github.com/ollama/ollama",
+          "format": "Hands-on",
+          "level": "Beginner",
+          "time": "30 min",
+          "why": "The quickest way to run an open model locally and see for yourself how hardware limits speed and model size."
+        },
+        {
+          "id": "visual-quantization",
+          "title": "A Visual Guide to Quantization",
+          "by": "Maarten Grootendorst",
+          "url": "https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-quantization",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "45 min",
+          "why": "How models are shrunk to fit in less memory, and what you give up. The key to running big models on small hardware."
+        },
+        {
+          "id": "brrr",
+          "title": "Making Deep Learning Go Brrrr From First Principles",
+          "by": "Horace He",
+          "url": "https://horace.io/brrr_intro.html",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "30 min",
+          "why": "How to reason about whether you are limited by compute, memory bandwidth or overhead, instead of guessing."
+        },
+        {
+          "id": "nvidia-cuda-intro",
+          "title": "An Even Easier Introduction to CUDA",
+          "by": "NVIDIA",
+          "url": "https://developer.nvidia.com/blog/even-easier-introduction-cuda/",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "1 hr",
+          "why": "Write your first GPU program. Makes clear what frameworks like PyTorch are doing underneath."
+        },
+        {
+          "id": "llama-cpp",
+          "title": "llama.cpp",
+          "by": "ggml-org",
+          "url": "https://github.com/ggml-org/llama.cpp",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "Project",
+          "why": "The engine behind most local model tools. Its docs show how quantised models run across CPUs, GPUs and Apple silicon."
+        },
+        {
+          "id": "bentoml-handbook",
+          "title": "LLM Inference Handbook",
+          "by": "BentoML",
+          "url": "https://bentoml.com/llm/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "≈ 4 hrs",
+          "why": "A free, structured guide to serving: metrics, batching, caching, choosing hardware, and scaling."
+        },
+        {
+          "id": "vllm-docs",
+          "title": "vLLM documentation",
+          "by": "vLLM",
+          "url": "https://docs.vllm.ai/",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 2 hrs",
+          "why": "The most widely used open-source serving engine. Start with the quickstart to serve a model behind an API."
+        },
+        {
+          "id": "docker-start",
+          "title": "Docker: get started",
+          "by": "Docker docs",
+          "url": "https://docs.docker.com/get-started/",
+          "format": "Hands-on",
+          "level": "Beginner",
+          "time": "≈ 2 hrs",
+          "why": "Containers come before Kubernetes. Skip this if you already use them."
+        },
+        {
+          "id": "k8s-basics",
+          "title": "Learn Kubernetes Basics",
+          "by": "kubernetes.io",
+          "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 3 hrs",
+          "why": "The official interactive tutorial: clusters, pods, deployments, services and scaling."
+        },
+        {
+          "id": "k8s-gpus",
+          "title": "Schedule GPUs",
+          "by": "kubernetes.io",
+          "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "20 min",
+          "why": "How Kubernetes sees a GPU and how a workload asks for one."
+        },
+        {
+          "id": "gpu-operator",
+          "title": "NVIDIA GPU Operator: getting started",
+          "by": "NVIDIA docs",
+          "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html",
+          "format": "Hands-on",
+          "level": "Intermediate",
+          "time": "≈ 2 hrs",
+          "why": "The standard way to make GPUs usable in a cluster: drivers, runtime, device plugin and monitoring installed for you."
+        },
+        {
+          "id": "gke-gpu-sharing",
+          "title": "GPU sharing strategies: time-sharing, MPS and multi-instance",
+          "by": "Google Kubernetes Engine docs",
+          "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/timesharing-gpus",
+          "format": "Reading",
+          "level": "Intermediate",
+          "time": "30 min",
+          "why": "The clearest side-by-side of the three ways to carve up one GPU, and which to pick. Applies beyond Google's cloud."
+        },
+        {
+          "id": "nvidia-time-slicing",
+          "title": "Time-slicing GPUs in Kubernetes",
+          "by": "NVIDIA docs",
+          "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html",
+          "format": "Hands-on",
+          "level": "Advanced",
+          "time": "1 hr",
+          "why": "Configure several pods to take turns on one GPU. Simple, but with no memory isolation between them."
+        },
+        {
+          "id": "nvidia-mig",
+          "title": "Multi-Instance GPU (MIG) user guide",
+          "by": "NVIDIA docs",
+          "url": "https://docs.nvidia.com/datacenter/tesla/mig-user-guide/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "1.5 hrs",
+          "why": "Split a supported GPU into isolated slices, each with its own memory and compute, so different models can't interfere."
+        },
+        {
+          "id": "nvidia-mps",
+          "title": "Multi-Process Service (MPS)",
+          "by": "NVIDIA docs",
+          "url": "https://docs.nvidia.com/deploy/mps/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "1 hr",
+          "why": "Let several processes run on a GPU at the same moment instead of taking turns. Best for many small workloads."
+        },
+        {
+          "id": "k8s-dra",
+          "title": "Dynamic Resource Allocation",
+          "by": "kubernetes.io",
+          "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "45 min",
+          "why": "The newer Kubernetes mechanism for requesting and sharing devices like GPUs with far more control than a simple count."
+        },
+        {
+          "id": "kserve",
+          "title": "KServe",
+          "by": "KServe",
+          "url": "https://kserve.github.io/website/",
+          "format": "Hands-on",
+          "level": "Advanced",
+          "time": "≈ 3 hrs",
+          "why": "A standard way to deploy models on Kubernetes with autoscaling, including scale-to-zero, and canary rollouts."
+        },
+        {
+          "id": "vllm-production-stack",
+          "title": "vLLM production stack",
+          "by": "vLLM",
+          "url": "https://github.com/vllm-project/production-stack",
+          "format": "Hands-on",
+          "level": "Advanced",
+          "time": "≈ 3 hrs",
+          "why": "A reference deployment of vLLM on Kubernetes with routing between models, autoscaling and monitoring."
+        },
+        {
+          "id": "kueue",
+          "title": "Kueue: job queueing for Kubernetes",
+          "by": "Kubernetes SIGs",
+          "url": "https://kueue.sigs.k8s.io/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "1.5 hrs",
+          "why": "Share a limited pool of GPUs fairly between teams and jobs with quotas, priorities and queues."
+        },
+        {
+          "id": "inference-arithmetic",
+          "title": "Transformer Inference Arithmetic",
+          "by": "Kipply",
+          "url": "https://kipp.ly/transformer-inference-arithmetic/",
+          "format": "Reading",
+          "level": "Advanced",
+          "time": "45 min",
+          "why": "Work out from first principles how much memory and time a model needs, including the KV cache."
+        },
+        {
+          "id": "efficientml",
+          "title": "TinyML and Efficient Deep Learning Computing",
+          "by": "Song Han, MIT",
+          "url": "https://efficientml.ai/",
+          "format": "Course",
+          "level": "Advanced",
+          "time": "≈ 12 weeks",
+          "why": "Full lectures on pruning, quantisation, distillation and efficient inference, the techniques that make models cheap to run."
+        },
+        {
+          "id": "pytorch-ddp",
+          "title": "Distributed Data Parallel in PyTorch",
+          "by": "PyTorch",
+          "url": "https://pytorch.org/tutorials/beginner/ddp_series_intro.html",
+          "format": "Hands-on",
+          "level": "Advanced",
+          "time": "≈ 3 hrs",
+          "why": "Train one model across several GPUs and machines. The step up from a single card."
+        }
       ]
     }
   ]

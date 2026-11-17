@@ -17,7 +17,8 @@ strip on phones).
 ## The AI Classroom (learning page)
 
 A second page, published at `/learn/`, is a staged programme of free AI tutorials: from what
-a neural network is, through how language models are built and fine-tuned, to building agents.
+a neural network is, through how language models are built and fine-tuned, to building agents and the hardware
+and Kubernetes infrastructure they run on.
 
 - `newsletter/curriculum.json` is the hand-picked programme: stages, the resources in each, and
   the three suggested routes through them. Edit this file to add, remove or reorder resources.
