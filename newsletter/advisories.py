@@ -46,64 +46,64 @@ def _parse_time(text):
         return None
 
 
+def _fetch_package(name, token):
+    """The most recent reviewed advisories for one package, or an error message."""
+    params = {"type": "reviewed", "sort": "published", "direction": "desc", "per_page": 10,
+              "affects": name}
+    try:
+        return _request(params, token)
+    except Exception as exc:
+        return f"{name}: {type(exc).__name__}: {exc}"
+
+
 def fetch(now, config_path=HERE / "security.json"):
     """Return a list of advisory dicts, newest first, or None if the lookup failed."""
+    from concurrent.futures import ThreadPoolExecutor
     config = json.loads(Path(config_path).read_text(encoding="utf-8"))
     packages = config["packages"]
     window = timedelta(days=config.get("window_days", 14))
     token = os.environ.get("GITHUB_TOKEN", "")
-    since = (now - window).date().isoformat()
-    base = {"type": "reviewed", "sort": "published", "direction": "desc", "per_page": 100,
-            "published": f">={since}"}
 
-    raw = None
-    for affects in (",".join(packages), packages):  # comma list first, then affects[]=…
-        params = dict(base)
-        params["affects" if isinstance(affects, str) else "affects[]"] = affects
-        try:
-            raw = _request(params, token)
-            break
-        except urllib.error.HTTPError as exc:
-            print(f"  advisories: HTTP {exc.code} from GitHub; "
-                  f"{'retrying' if isinstance(affects, str) else 'giving up'}", file=sys.stderr)
-        except Exception as exc:
-            print(f"  advisories: lookup failed ({type(exc).__name__}: {exc})", file=sys.stderr)
-            return None
-    if not isinstance(raw, list):
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(lambda name: _fetch_package(name, token), packages))
+    errors = [r for r in results if isinstance(r, str)]
+    results = [None if isinstance(r, str) else r for r in results]
+    failed = len(errors)
+    for line in errors[:3]:
+        print(f"  advisories: {line}", file=sys.stderr)
+    if failed == len(packages):
         return None
 
     watched = {p.lower() for p in packages}
-    found, off_list, too_old = [], 0, 0
-    for adv in raw:
-        published = _parse_time(adv.get("published_at"))
-        if not published or published < now - window or adv.get("withdrawn_at"):
-            too_old += 1
-            continue
-        vulns = adv.get("vulnerabilities") or []
-        hits = [v for v in vulns if (v.get("package") or {}).get("name", "").lower() in watched]
-        if not hits:  # only show advisories that really affect a watched package
-            off_list += 1
-            continue
-        names = sorted({v["package"]["name"] for v in hits})
-        fixed = sorted({_patched(v) for v in hits if _patched(v)})
-        severity = (adv.get("severity") or "unknown").lower()
-        found.append({
-            "id": adv.get("cve_id") or adv.get("ghsa_id") or "",
-            "summary": (adv.get("summary") or "").strip(),
-            "url": adv.get("html_url") or f"https://github.com/advisories/{adv.get('ghsa_id', '')}",
-            "severity": "medium" if severity == "moderate" else severity,
-            "packages": names,
-            "fixed": fixed,
-            "when": published,
-        })
-    newest = max((a.get("published_at") or "" for a in raw), default="none")
-    print(f"  advisories: {len(raw)} returned since {since} (newest {newest}); {len(found)} kept, "
-          f"{too_old} older or withdrawn, {off_list} not for a watched package", file=sys.stderr)
-    if raw and not found:
-        a = raw[0]
-        pkgs = [(v.get("package") or {}).get("name") for v in a.get("vulnerabilities") or []]
-        print(f"       first returned: {a.get('ghsa_id')} published {a.get('published_at')} "
-              f"packages {pkgs[:4]}", file=sys.stderr)
+    found, seen, latest = [], set(), []
+    for name, raw in zip(packages, results):
+        for adv in raw or []:
+            published = _parse_time(adv.get("published_at"))
+            if published:
+                latest.append((published, name))
+            if not published or published < now - window or adv.get("withdrawn_at"):
+                continue
+            if adv.get("ghsa_id") in seen:
+                continue
+            vulns = adv.get("vulnerabilities") or []
+            hits = [v for v in vulns if (v.get("package") or {}).get("name", "").lower() in watched]
+            if not hits:
+                continue
+            seen.add(adv.get("ghsa_id"))
+            severity = (adv.get("severity") or "unknown").lower()
+            found.append({
+                "id": adv.get("cve_id") or adv.get("ghsa_id") or "",
+                "summary": (adv.get("summary") or "").strip(),
+                "url": adv.get("html_url") or f"https://github.com/advisories/{adv.get('ghsa_id', '')}",
+                "severity": "medium" if severity == "moderate" else severity,
+                "packages": sorted({v["package"]["name"] for v in hits}),
+                "fixed": sorted({_patched(v) for v in hits if _patched(v)}),
+                "when": published,
+            })
+    found.sort(key=lambda a: a["when"], reverse=True)
+    recent = ", ".join(f"{n} {d:%d %b}" for d, n in sorted(set(latest), reverse=True)[:6])
+    print(f"  advisories: checked {len(packages)} packages ({failed} failed); {len(found)} published "
+          f"in the last {window.days} days. Most recent: {recent or 'none'}", file=sys.stderr)
     for a in found[:3]:
         print(f"       e.g. [{a['severity']}] {', '.join(a['packages'])}: {a['summary'][:70]}",
               file=sys.stderr)
