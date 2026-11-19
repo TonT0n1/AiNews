@@ -52,7 +52,9 @@ def fetch(now, config_path=HERE / "security.json"):
     packages = config["packages"]
     window = timedelta(days=config.get("window_days", 14))
     token = os.environ.get("GITHUB_TOKEN", "")
-    base = {"type": "reviewed", "sort": "published", "direction": "desc", "per_page": 100}
+    since = (now - window).date().isoformat()
+    base = {"type": "reviewed", "sort": "published", "direction": "desc", "per_page": 100,
+            "published": f">={since}"}
 
     raw = None
     for affects in (",".join(packages), packages):  # comma list first, then affects[]=…
@@ -71,15 +73,18 @@ def fetch(now, config_path=HERE / "security.json"):
         return None
 
     watched = {p.lower() for p in packages}
-    found = []
+    found, off_list, too_old = [], 0, 0
     for adv in raw:
         published = _parse_time(adv.get("published_at"))
         if not published or published < now - window or adv.get("withdrawn_at"):
+            too_old += 1
             continue
         vulns = adv.get("vulnerabilities") or []
         hits = [v for v in vulns if (v.get("package") or {}).get("name", "").lower() in watched]
-        names = sorted({v["package"]["name"] for v in hits}) or \
-            sorted({(v.get("package") or {}).get("name", "") for v in vulns} - {""})
+        if not hits:  # only show advisories that really affect a watched package
+            off_list += 1
+            continue
+        names = sorted({v["package"]["name"] for v in hits})
         fixed = sorted({_patched(v) for v in hits if _patched(v)})
         severity = (adv.get("severity") or "unknown").lower()
         found.append({
@@ -91,8 +96,14 @@ def fetch(now, config_path=HERE / "security.json"):
             "fixed": fixed,
             "when": published,
         })
-    print(f"  advisories: {len(raw)} returned, {len(found)} in the last "
-          f"{window.days} days for the watched packages", file=sys.stderr)
+    newest = max((a.get("published_at") or "" for a in raw), default="none")
+    print(f"  advisories: {len(raw)} returned since {since} (newest {newest}); {len(found)} kept, "
+          f"{too_old} older or withdrawn, {off_list} not for a watched package", file=sys.stderr)
+    if raw and not found:
+        a = raw[0]
+        pkgs = [(v.get("package") or {}).get("name") for v in a.get("vulnerabilities") or []]
+        print(f"       first returned: {a.get('ghsa_id')} published {a.get('published_at')} "
+              f"packages {pkgs[:4]}", file=sys.stderr)
     for a in found[:3]:
         print(f"       e.g. [{a['severity']}] {', '.join(a['packages'])}: {a['summary'][:70]}",
               file=sys.stderr)

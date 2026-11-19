@@ -477,6 +477,8 @@ def render(stories, events, now, template, ai_edited=False, advisories=None):
             '<ul class="stories">' + "".join(render_story(s, now) for s in tools)
             + "</ul></section>"
         )
+    print("  sections: " + ", ".join(f"{n} {len(groups.get(n, []))}" for n in order)
+          + f"; top {len(lead)}, tools {len(tools)}", file=sys.stderr)
     for name in order:
         items = groups.get(name, [])[:MAX_PER_TOPIC]
         extra = render_advisories(advisories, now) if name == "Security" else ""
