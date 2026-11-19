@@ -415,43 +415,47 @@ def render_event(e, today):
     )
 
 
-SEVERITY_LABEL = {"critical": "Critical", "high": "High", "medium": "Medium", "low": "Low"}
-MAX_ADVISORIES = 12
+ADVISORIES_SHOWN = 15     # the rest fold away behind "Show N more"
 
 
-def render_advisories(advisories, now, days=30):
-    if advisories is None:  # the lookup failed: say nothing rather than "nothing found"
-        return ""
-    head = ('<div class="advisories"><h3>New advisories in AI software</h3>'
-            f'<p class="blurb">Security advisories published in the last {days} days for widely used AI '
-            'libraries, serving tools and agent frameworks, from the '
-            '<a href="https://github.com/advisories" target="_blank" rel="noopener noreferrer">'
-            'GitHub Advisory Database</a>.</p>')
+def render_advisory(a, now):
+    tier = "max" if a["score"] >= 9.8 else "crit"
+    exploited = ('<span class="exploited" title="Listed by CISA as exploited in the wild">'
+                 'Exploited</span>') if a["exploited"] else ""
+    products = f'<span class="source">{esc(", ".join(a["products"]))}</span>' if a["products"] else ""
+    return (
+        f'<li class="adv"><span class="score score-{tier}" title="CVSS {esc(a["version"])} base score">'
+        f'{a["score"]:.1f}</span><div><a href="{esc(a["url"])}" target="_blank" rel="noopener noreferrer">'
+        f'{esc(a["summary"] or a["id"])}</a>'
+        f'<p class="meta">{exploited}{products}<span>{esc(a["id"])}</span>'
+        f'<time datetime="{a["when"].isoformat()}" data-rel>{_ago(a["when"], now)}</time></p>'
+        f'</div></li>')
+
+
+def render_advisories(advisories, now, info):
+    """info: {"min_score", "window_hours", "source"}."""
+    if advisories is None:  # every lookup failed: say so briefly rather than "nothing found"
+        return ('<div class="advisories"><h3>New critical vulnerabilities</h3>'
+                '<p class="none">The vulnerability databases could not be reached for this edition.</p></div>')
+    source = ('<a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">National '
+              'Vulnerability Database</a>') if info["source"] == "NVD" else (
+              '<a href="https://github.com/advisories" target="_blank" rel="noopener noreferrer">GitHub '
+              'Advisory Database</a> (NVD was unavailable, so this covers open-source packages only)')
+    head = (f'<div class="advisories"><h3>New critical vulnerabilities</h3>'
+            f'<p class="blurb">Every CVE published in the last {info["window_hours"]} hours with a CVSS '
+            f'score of {info["min_score"]:.1f} or higher, for any product, from the {source}.</p>')
     if not advisories:
-        return head + '<p class="none">No new advisories for the tracked packages.</p></div>'
-    ranked = sorted(advisories, key=lambda a: (advisories_rank(a["severity"]), -a["when"].timestamp()))
-    rows = []
-    for a in ranked[:MAX_ADVISORIES]:
-        sev = a["severity"] if a["severity"] in SEVERITY_LABEL else "unknown"
-        fixed = f' · fixed in {esc(", ".join(a["fixed"]))}' if a["fixed"] else " · no fix listed"
-        rows.append(
-            f'<li class="adv"><span class="sev sev-{sev}">{SEVERITY_LABEL.get(sev, "Unrated")}</span>'
-            f'<div><a href="{esc(a["url"])}" target="_blank" rel="noopener noreferrer">'
-            f'{esc(a["summary"] or a["id"])}</a>'
-            f'<p class="meta"><span class="source">{esc(", ".join(a["packages"]))}</span>'
-            f'<span>{esc(a["id"])}{fixed}</span>'
-            f'<time datetime="{a["when"].isoformat()}" data-rel>{_ago(a["when"], now)}</time></p>'
-            f'</div></li>')
-    more = (f'<p class="none">Showing the {MAX_ADVISORIES} most severe of {len(advisories)}.</p>'
-            if len(advisories) > MAX_ADVISORIES else "")
-    return head + '<ul class="adv-list">' + "".join(rows) + "</ul>" + more + "</div>"
+        return head + '<p class="none">None published in that window.</p></div>'
+    shown, rest = advisories[:ADVISORIES_SHOWN], advisories[ADVISORIES_SHOWN:]
+    html_rows = '<ul class="adv-list">' + "".join(render_advisory(a, now) for a in shown) + "</ul>"
+    if rest:
+        html_rows += (f'<details class="more-adv"><summary>Show {len(rest)} more</summary>'
+                      '<ul class="adv-list">' + "".join(render_advisory(a, now) for a in rest)
+                      + "</ul></details>")
+    return head + html_rows + "</div>"
 
 
-def advisories_rank(severity):
-    return {"critical": 0, "high": 1, "medium": 2, "low": 3}.get(severity, 4)
-
-
-def render(stories, events, now, template, ai_edited=False, advisories=None, advisory_days=30):
+def render(stories, events, now, template, ai_edited=False, advisories=None, advisory_info=None):
     tools, per_source = [], {}
     for s in stories:  # newest first, at most three per source so one feed can't fill the block
         if s["section"] == "tools" and len(tools) < MAX_TOOLS and per_source.get(s["source"], 0) < 3:
@@ -481,7 +485,8 @@ def render(stories, events, now, template, ai_edited=False, advisories=None, adv
           + f"; top {len(lead)}, tools {len(tools)}", file=sys.stderr)
     for name in order:
         items = groups.get(name, [])[:MAX_PER_TOPIC]
-        extra = render_advisories(advisories, now, advisory_days) if name == "Security" else ""
+        extra = (render_advisories(advisories, now, advisory_info)
+                 if name == "Security" and advisory_info else "")
         if not items and not extra:
             continue
         slug = re.sub(r"[^a-z]+", "-", name.lower()).strip("-")
@@ -540,18 +545,17 @@ def main():
     else:
         print("  AI: no OPENAI_API_KEY or ANTHROPIC_API_KEY set; using publishers' own text", file=sys.stderr)
 
-    advisory_days = 30
+    advisories, advisory_info = None, None
     try:
         import advisories as adv_mod
-        advisory_days = adv_mod.window_days()
-        advisories = adv_mod.fetch(now)
+        advisories, source = adv_mod.fetch(now)
+        advisory_info = dict(adv_mod.config(), source=source)
     except Exception as exc:  # never let the advisory lookup stop the edition
         print(f"  advisories: skipped ({type(exc).__name__}: {exc})", file=sys.stderr)
-        advisories = None
 
     events = load_events(args.events, now.date())
     page = render(stories, events, now, (HERE / "template.html").read_text(encoding="utf-8"),
-                  ai_edited, advisories, advisory_days)
+                  ai_edited, advisories, advisory_info)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page, encoding="utf-8")

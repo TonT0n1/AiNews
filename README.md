@@ -16,12 +16,16 @@ strip on phones).
 
 ## Security section
 
-The news page has a Security section: AI-related stories from security outlets (The Hacker News,
-BleepingComputer, Project Zero and others; feeds with `"topic": "Security"`), plus a list of
-advisories published in the last 30 days (`window_days`) for the AI packages listed in
-`newsletter/security.json`, from the GitHub Advisory Database. With AI editing on, stories
-where the flaw was discovered by an AI system get a "Found by AI" tag. Add or remove watched
-packages in `security.json`.
+The news page has a Security section with two parts:
+
+- AI-related stories from security outlets (The Hacker News, BleepingComputer, Project Zero and
+  others; feeds with `"topic": "Security"`). With AI editing on, stories where the flaw was
+  discovered by an AI system get a "Found by AI" tag.
+- Every CVE published in the last 48 hours with a CVSS score of 9.0 or higher, for any product,
+  from the National Vulnerability Database. CVEs that CISA lists as exploited in the wild are
+  tagged. If NVD is down, critical advisories from the GitHub Advisory Database are used
+  instead. Change the threshold or window in `newsletter/security.json`; an optional
+  `NVD_API_KEY` repository secret raises NVD's rate limit.
 
 ## The AI Classroom (learning page)
 
