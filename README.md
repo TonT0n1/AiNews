@@ -18,7 +18,7 @@ strip on phones).
 
 The news page has a Security section: AI-related stories from security outlets (The Hacker News,
 BleepingComputer, Project Zero and others; feeds with `"topic": "Security"`), plus a list of
-advisories published in the last two weeks for the AI packages listed in
+advisories published in the last 30 days (`window_days`) for the AI packages listed in
 `newsletter/security.json`, from the GitHub Advisory Database. With AI editing on, stories
 where the flaw was discovered by an AI system get a "Found by AI" tag. Add or remove watched
 packages in `security.json`.

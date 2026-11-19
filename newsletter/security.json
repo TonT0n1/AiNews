@@ -1,5 +1,5 @@
 {
-  "window_days": 14,
+  "window_days": 30,
   "packages": [
     "vllm", "sglang", "transformers", "torch", "tensorflow", "keras", "onnx", "onnxruntime",
     "safetensors", "huggingface-hub", "diffusers", "accelerate", "deepspeed", "peft",

@@ -19,6 +19,10 @@ HERE = Path(__file__).parent
 API = "https://api.github.com/advisories"
 
 
+def window_days(config_path=HERE / "security.json"):
+    return json.loads(Path(config_path).read_text(encoding="utf-8")).get("window_days", 14)
+
+
 def _request(params, token):
     headers = {
         "Accept": "application/vnd.github+json",
@@ -101,7 +105,10 @@ def fetch(now, config_path=HERE / "security.json"):
                 "when": published,
             })
     found.sort(key=lambda a: a["when"], reverse=True)
-    recent = ", ".join(f"{n} {d:%d %b}" for d, n in sorted(set(latest), reverse=True)[:6])
+    newest = {}
+    for d, n in latest:
+        newest[n] = max(d, newest.get(n, d))
+    recent = ", ".join(f"{n} {d:%d %b}" for n, d in sorted(newest.items(), key=lambda x: x[1], reverse=True)[:6])
     print(f"  advisories: checked {len(packages)} packages ({failed} failed); {len(found)} published "
           f"in the last {window.days} days. Most recent: {recent or 'none'}", file=sys.stderr)
     for a in found[:3]:

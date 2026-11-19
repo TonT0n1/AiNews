@@ -419,11 +419,11 @@ SEVERITY_LABEL = {"critical": "Critical", "high": "High", "medium": "Medium", "l
 MAX_ADVISORIES = 12
 
 
-def render_advisories(advisories, now):
+def render_advisories(advisories, now, days=30):
     if advisories is None:  # the lookup failed: say nothing rather than "nothing found"
         return ""
     head = ('<div class="advisories"><h3>New advisories in AI software</h3>'
-            '<p class="blurb">Security advisories published in the last two weeks for widely used AI '
+            f'<p class="blurb">Security advisories published in the last {days} days for widely used AI '
             'libraries, serving tools and agent frameworks, from the '
             '<a href="https://github.com/advisories" target="_blank" rel="noopener noreferrer">'
             'GitHub Advisory Database</a>.</p>')
@@ -451,7 +451,7 @@ def advisories_rank(severity):
     return {"critical": 0, "high": 1, "medium": 2, "low": 3}.get(severity, 4)
 
 
-def render(stories, events, now, template, ai_edited=False, advisories=None):
+def render(stories, events, now, template, ai_edited=False, advisories=None, advisory_days=30):
     tools, per_source = [], {}
     for s in stories:  # newest first, at most three per source so one feed can't fill the block
         if s["section"] == "tools" and len(tools) < MAX_TOOLS and per_source.get(s["source"], 0) < 3:
@@ -481,7 +481,7 @@ def render(stories, events, now, template, ai_edited=False, advisories=None):
           + f"; top {len(lead)}, tools {len(tools)}", file=sys.stderr)
     for name in order:
         items = groups.get(name, [])[:MAX_PER_TOPIC]
-        extra = render_advisories(advisories, now) if name == "Security" else ""
+        extra = render_advisories(advisories, now, advisory_days) if name == "Security" else ""
         if not items and not extra:
             continue
         slug = re.sub(r"[^a-z]+", "-", name.lower()).strip("-")
@@ -540,8 +540,10 @@ def main():
     else:
         print("  AI: no OPENAI_API_KEY or ANTHROPIC_API_KEY set; using publishers' own text", file=sys.stderr)
 
+    advisory_days = 30
     try:
         import advisories as adv_mod
+        advisory_days = adv_mod.window_days()
         advisories = adv_mod.fetch(now)
     except Exception as exc:  # never let the advisory lookup stop the edition
         print(f"  advisories: skipped ({type(exc).__name__}: {exc})", file=sys.stderr)
@@ -549,7 +551,7 @@ def main():
 
     events = load_events(args.events, now.date())
     page = render(stories, events, now, (HERE / "template.html").read_text(encoding="utf-8"),
-                  ai_edited, advisories)
+                  ai_edited, advisories, advisory_days)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page, encoding="utf-8")
