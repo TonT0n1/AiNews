@@ -48,6 +48,10 @@ AI_RE = re.compile(
 
 # First match wins, so order matters.
 TOPICS = [
+    ("Security", re.compile(
+        r"\b(vulnerabilit\w*|CVE-\d+|exploit\w*|malware|ransomware|phishing|hack(s|ed|ers?|ing)?|"
+        r"breach\w*|zero[- ]day|prompt injection|jailbreak\w*|backdoor\w*|cyber\w*|"
+        r"security flaw|remote code execution|RCE|data leak\w*|threat actors?)\b", re.I)),
     ("Policy & safety", re.compile(
         r"\b(regulat\w*|law(s|suit|makers?)?|legislat\w*|senat\w*|congress|parliament|"
         r"court|judge|sue[sd]?|suing|copyright|ban(s|ned)?|govern\w*|policy|"
@@ -197,6 +201,8 @@ def fetch_feed(feed):
         stories = [s for s in stories if AI_RE.search(s["title"] + " " + s["summary"])]
     for s in stories:
         s["section"] = feed.get("section", "news")
+        if feed.get("topic"):  # e.g. security outlets: everything they publish goes in Security
+            s["topic"], s["fixed_topic"] = feed["topic"], True
         s["title"] = re.sub(r"^(Show|Launch) HN:\s*", "", s["title"])
     print(f"  ok   {feed['name']}: {len(stories)} stories", file=sys.stderr)
     if feed.get("aggregator") and stories:
@@ -261,7 +267,8 @@ def apply_ai(stories):
         if row["summary"].strip():
             s["summary"] = row["summary"].strip()
         s["importance"] = min(5, max(1, row["importance"]))
-        if row["topic"] in topics:
+        s["found_by_ai"] = bool(row.get("found_by_ai"))
+        if row["topic"] in topics and not s.get("fixed_topic"):
             s["topic"] = row["topic"]
     kept, removed = [], set()
     for i, s in enumerate(stories):
@@ -278,6 +285,7 @@ def apply_ai(stories):
             target["importance"] = max(target.get("importance", 1), s.get("importance", 1))
             if s["section"] == "tools":
                 target["section"] = "tools"
+            target["found_by_ai"] = target.get("found_by_ai") or s.get("found_by_ai")
             removed.add(i)
     # Aggregators pull in some filler; drop what the model rates as barely relevant.
     kept = [s for i, s in enumerate(stories)
@@ -366,6 +374,8 @@ def _ago(when, now):
 def render_story(s, now):
     """A story is collapsed to its headline; opening it shows the summary and the source link."""
     badge = '<span class="new">New</span>' if s["new"] else ""
+    if s.get("found_by_ai"):
+        badge += '<span class="ai-found" title="The vulnerability was discovered by an AI system">Found by AI</span>'
     summary = esc(s["summary"]) if s["summary"] else "The source did not provide a summary for this story."
     also = ""
     if s.get("also"):
@@ -405,13 +415,52 @@ def render_event(e, today):
     )
 
 
-def render(stories, events, now, template, ai_edited=False):
+SEVERITY_LABEL = {"critical": "Critical", "high": "High", "medium": "Medium", "low": "Low"}
+MAX_ADVISORIES = 12
+
+
+def render_advisories(advisories, now):
+    if advisories is None:  # the lookup failed: say nothing rather than "nothing found"
+        return ""
+    head = ('<div class="advisories"><h3>New advisories in AI software</h3>'
+            '<p class="blurb">Security advisories published in the last two weeks for widely used AI '
+            'libraries, serving tools and agent frameworks, from the '
+            '<a href="https://github.com/advisories" target="_blank" rel="noopener noreferrer">'
+            'GitHub Advisory Database</a>.</p>')
+    if not advisories:
+        return head + '<p class="none">No new advisories for the tracked packages.</p></div>'
+    ranked = sorted(advisories, key=lambda a: (advisories_rank(a["severity"]), -a["when"].timestamp()))
+    rows = []
+    for a in ranked[:MAX_ADVISORIES]:
+        sev = a["severity"] if a["severity"] in SEVERITY_LABEL else "unknown"
+        fixed = f' · fixed in {esc(", ".join(a["fixed"]))}' if a["fixed"] else " · no fix listed"
+        rows.append(
+            f'<li class="adv"><span class="sev sev-{sev}">{SEVERITY_LABEL.get(sev, "Unrated")}</span>'
+            f'<div><a href="{esc(a["url"])}" target="_blank" rel="noopener noreferrer">'
+            f'{esc(a["summary"] or a["id"])}</a>'
+            f'<p class="meta"><span class="source">{esc(", ".join(a["packages"]))}</span>'
+            f'<span>{esc(a["id"])}{fixed}</span>'
+            f'<time datetime="{a["when"].isoformat()}" data-rel>{_ago(a["when"], now)}</time></p>'
+            f'</div></li>')
+    more = (f'<p class="none">Showing the {MAX_ADVISORIES} most severe of {len(advisories)}.</p>'
+            if len(advisories) > MAX_ADVISORIES else "")
+    return head + '<ul class="adv-list">' + "".join(rows) + "</ul>" + more + "</div>"
+
+
+def advisories_rank(severity):
+    return {"critical": 0, "high": 1, "medium": 2, "low": 3}.get(severity, 4)
+
+
+def render(stories, events, now, template, ai_edited=False, advisories=None):
     tools, per_source = [], {}
     for s in stories:  # newest first, at most three per source so one feed can't fill the block
         if s["section"] == "tools" and len(tools) < MAX_TOOLS and per_source.get(s["source"], 0) < 3:
             tools.append(s)
             per_source[s["source"]] = per_source.get(s["source"], 0) + 1
-    lead, rest = split_lead([s for s in stories if s["section"] != "tools"], ai_edited)
+    # Tools and security stories have their own sections, so they stay out of the top block.
+    pool = [s for s in stories if s["section"] != "tools"]
+    lead, _ = split_lead([s for s in pool if classify(s) != "Security"], ai_edited)
+    rest = [s for s in pool if not any(s is x for x in lead)]
     groups = {}
     for s in rest:
         groups.setdefault(classify(s), []).append(s)
@@ -430,14 +479,16 @@ def render(stories, events, now, template, ai_edited=False):
         )
     for name in order:
         items = groups.get(name, [])[:MAX_PER_TOPIC]
-        if not items:
+        extra = render_advisories(advisories, now) if name == "Security" else ""
+        if not items and not extra:
             continue
         slug = re.sub(r"[^a-z]+", "-", name.lower()).strip("-")
         nav.append(f'<a href="#{slug}">{esc(name)}</a>')
-        sections.append(
-            f'<section id="{slug}"><h2>{esc(name)}</h2><ul class="stories">'
-            + "".join(render_story(s, now) for s in items) + "</ul></section>"
-        )
+        blurb = ('<p class="blurb">Vulnerabilities found by AI, flaws in AI software, and attacks '
+                 'that use AI.</p>') if name == "Security" else ""
+        stories_html = ('<ul class="stories">' + "".join(render_story(s, now) for s in items)
+                        + "</ul>") if items else ""
+        sections.append(f'<section id="{slug}"><h2>{esc(name)}</h2>{blurb}{stories_html}{extra}</section>')
 
     edition = "Morning edition" if now.hour < 12 else "Evening edition"
     sources = sorted({s["source"] for s in stories}, key=str.lower)
@@ -487,9 +538,16 @@ def main():
     else:
         print("  AI: no OPENAI_API_KEY or ANTHROPIC_API_KEY set; using publishers' own text", file=sys.stderr)
 
+    try:
+        import advisories as adv_mod
+        advisories = adv_mod.fetch(now)
+    except Exception as exc:  # never let the advisory lookup stop the edition
+        print(f"  advisories: skipped ({type(exc).__name__}: {exc})", file=sys.stderr)
+        advisories = None
+
     events = load_events(args.events, now.date())
     page = render(stories, events, now, (HERE / "template.html").read_text(encoding="utf-8"),
-                  ai_edited)
+                  ai_edited, advisories)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page, encoding="utf-8")

@@ -37,6 +37,8 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Only used to raise the rate limit on the GitHub Advisory Database lookup.
+          GITHUB_TOKEN: ${{ github.token }}
         run: python3 newsletter/build.py --out _site/index.html
       - name: Build learning page
         run: python3 newsletter/learn.py --out _site/learn/index.html

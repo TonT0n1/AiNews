@@ -39,7 +39,14 @@ news. 1 is minor, promotional, or only loosely about AI. Use the whole range; mo
 only a few 5s.
 
 - topic: the section it belongs in, chosen from the allowed values by what the story is mainly \
-about rather than by keywords in the headline.
+about rather than by keywords in the headline. Use "Security" for vulnerabilities and exploits \
+(including ones found by AI systems), flaws in AI software such as prompt injection, attacks that \
+use AI, and security defences; use "Policy & safety" for regulation, law and AI safety in the \
+sense of model behaviour.
+
+- found_by_ai: true only when the text says a vulnerability, exploit or security bug was \
+discovered by an AI system (for example an AI agent or model that found the flaw). False for \
+everything else, including flaws in AI software that people found.
 
 - duplicate_of: when several stories report the same event (the same announcement, ruling, deal \
 or release), pick the one with the fullest text as the main story and give its id here for each \
@@ -63,8 +70,10 @@ def _schema(topics):
                         "importance": {"type": "integer"},
                         "topic": {"type": "string", "enum": topics},
                         "duplicate_of": {"type": "integer"},
+                        "found_by_ai": {"type": "boolean"},
                     },
-                    "required": ["id", "summary", "importance", "topic", "duplicate_of"],
+                    "required": ["id", "summary", "importance", "topic", "duplicate_of",
+                                 "found_by_ai"],
                     "additionalProperties": False,
                 },
             }

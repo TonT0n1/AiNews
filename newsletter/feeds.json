@@ -20,5 +20,16 @@
   {"name": "Hugging Face", "url": "https://huggingface.co/blog/feed.xml", "section": "tools"},
   {"name": "Simon Willison", "url": "https://simonwillison.net/atom/everything/", "ai_only": true, "section": "tools"},
   {"name": "Techmeme", "url": "https://www.techmeme.com/feed.xml", "aggregator": true, "ai_only": true},
-  {"name": "Google News", "url": "https://news.google.com/rss/search?q=%22artificial+intelligence%22+OR+OpenAI+OR+Anthropic+OR+DeepMind+OR+Nvidia+when:2d&hl=en-GB&gl=GB&ceid=GB:en", "aggregator": true, "ai_only": true}
+  {"name": "Google News", "url": "https://news.google.com/rss/search?q=%22artificial+intelligence%22+OR+OpenAI+OR+Anthropic+OR+DeepMind+OR+Nvidia+when:2d&hl=en-GB&gl=GB&ceid=GB:en", "aggregator": true, "ai_only": true},
+  {"name": "The Hacker News", "url": "https://feeds.feedburner.com/TheHackersNews", "ai_only": true, "topic": "Security"},
+  {"name": "BleepingComputer", "url": "https://www.bleepingcomputer.com/feed/", "ai_only": true, "topic": "Security"},
+  {"name": "Dark Reading", "url": "https://www.darkreading.com/rss.xml", "ai_only": true, "topic": "Security"},
+  {"name": "SecurityWeek", "url": "https://www.securityweek.com/feed/", "ai_only": true, "topic": "Security"},
+  {"name": "Krebs on Security", "url": "https://krebsonsecurity.com/feed/", "ai_only": true, "topic": "Security"},
+  {"name": "The Register", "url": "https://www.theregister.com/security/headlines.atom", "ai_only": true, "topic": "Security"},
+  {"name": "Schneier on Security", "url": "https://www.schneier.com/feed/atom/", "ai_only": true, "topic": "Security"},
+  {"name": "Google Project Zero", "url": "https://googleprojectzero.blogspot.com/feeds/posts/default", "ai_only": true, "topic": "Security"},
+  {"name": "Google Security Blog", "url": "https://security.googleblog.com/feeds/posts/default", "ai_only": true, "topic": "Security"},
+  {"name": "Trail of Bits", "url": "https://blog.trailofbits.com/feed/", "ai_only": true, "topic": "Security"},
+  {"name": "Embrace The Red", "url": "https://embracethered.com/blog/index.xml", "topic": "Security"}
 ]
